@@ -1,0 +1,11 @@
+{
+  "name": "venomparser",
+  "version": "11.3.0",
+  "description": "Australian electricity bill parser for solar installers",
+  "author": "VenomProjects - Solar Tech Solutions",
+  "license": "PROPRIETARY",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_USERNAME/VenomParser"
+  }
+}
