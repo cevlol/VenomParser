@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VenomParser - Electricity Bill Parser</title>
+    <link rel="icon" type="image/png" href="assets/VenomProjectsSmall.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header-logo {
+            max-width: 500px;
+            width: 100%;
+            height: auto;
+            margin: 0 auto 20px;
+            display: block;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 8px;
+            padding: 60px 20px;
+            text-align: center;
+            background: #f8f9ff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            border-color: #764ba2;
+            background: #f0f2ff;
+        }
+
+        .upload-area.dragover {
+            border-color: #764ba2;
+            background: #e8ebff;
+        }
+
+        .upload-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .upload-text {
+            font-size: 1.2em;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .upload-hint {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .results {
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .result-header h2 {
+            color: #333;
+        }
+
+        .status {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status.warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .data-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .data-label {
+            font-size: 0.85em;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .data-value {
+            font-size: 1.3em;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .data-value.large {
+            font-size: 2em;
+            color: #667eea;
+        }
+
+        .warnings {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .warnings h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .warnings ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .warnings li {
+            color: #856404;
+            padding: 5px 0;
+        }
+
+        .warnings li:before {
+            content: "⚠ ";
+            margin-right: 5px;
+        }
+
+        .system-recommendation {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .system-recommendation h2 {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+
+        .recommended-system {
+            font-size: 1.5em;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+        }
+
+        .savings {
+            font-size: 1.2em;
+            opacity: 0.95;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            color: #721c24;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .test-controls {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .test-controls button {
+            margin: 5px;
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .test-controls button:hover {
+            background: #764ba2;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="assets/VenomProjectsBig.png" alt="VenomProjects - Solar Tech Solutions" class="header-logo">
+            <p>Australian Electricity Bill Parser - Test Page</p>
+            <p style="font-size: 0.9em; opacity: 0.8;">✨ NOW WITH OCR: Handles both text-based AND scanned PDFs!</p>
+        </div>
+
+        <div class="card">
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📄</div>
+                <div class="upload-text">Click to upload or drag & drop</div>
+                <div class="upload-hint">✨ Supports text-based AND scanned PDFs via OCR<br>
+                Works with: 1st Energy, Alinta, Origin, Red Energy, Lumo, OVO</div>
+                <input type="file" id="fileInput" accept=".pdf" multiple>
+            </div>
+
+            <div class="test-controls">
+                <strong>Quick Actions:</strong><br><br>
+                <button onclick="openConsole()">Open Console</button>
+                <button onclick="clearResults()">Clear Results</button>
+                <button onclick="showInstructions()">Show Instructions</button>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Parsing PDF... Please wait</p>
+        </div>
+
+        <div class="results" id="results">
+            <!-- Results will be inserted here dynamically -->
+        </div>
+
+        <div class="footer">
+            <p>VenomParser v11.3 - Electricity Bill Parsing Engine</p>
+            <p>Australian Retail Energy Bill Extraction</p>
+        </div>
+    </div>
+
+    <!-- Load PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    
+    <!-- Load Bill Parser (check which version you have) -->
+    <script src="src/bill-parser-complete.js"></script>
+    
+    <!-- Load Test Suite -->
+    <script src="examples/test-bill-parser.js"></script>
+
+    <script>
+        // Initialize PDF.js worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 
+            'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const loading = document.getElementById('loading');
+        const results = document.getElementById('results');
+
+        // Click to upload
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        // Drag and drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            
+            const files = Array.from(e.dataTransfer.files).filter(f => f.type === 'application/pdf');
+            if (files.length > 0) {
+                processFiles(files);
+            }
+        });
+
+        // File selection
+        fileInput.addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            if (files.length > 0) {
+                processFiles(files);
+            }
+        });
+
+        // Process uploaded files
+        async function processFiles(files) {
+            loading.classList.add('show');
+            const loadingText = loading.querySelector('p');
+            results.classList.remove('show');
+            results.innerHTML = '';
+
+            const parser = new VenomParser();
+
+            for (const file of files) {
+                try {
+                    const data = await parser.parsePDF(file);
+                    displayResults(file.name, data);
+                } catch (error) {
+                    displayError(file.name, error);
+                }
+            }
+
+            loading.classList.remove('show');
+            loadingText.textContent = 'Parsing PDF... Please wait';
+            results.classList.add('show');
+        }
+
+        // Display parsed results
+        function displayResults(fileName, data) {
+            const hasWarnings = data._warnings && data._warnings.length > 0;
+            
+            // Calculate recommendation
+            let recommendedSystem = '6.6kW';
+            let recommendedBattery = '10kWh';
+            
+            if (data.dailyUsage > 22 && data.dailyUsage <= 32) {
+                recommendedSystem = '10kW';
+            } else if (data.dailyUsage > 32) {
+                recommendedSystem = '13.2kW';
+                recommendedBattery = '15kWh';
+            }
+            
+            const annualSavings = Math.floor(data.quarterlyBill * 4 * 0.75);
+
+            const resultCard = document.createElement('div');
+            resultCard.className = 'card';
+            resultCard.innerHTML = `
+                <div class="result-header">
+                    <h2>📄 ${fileName}</h2>
+                    <span class="status ${hasWarnings ? 'warning' : 'success'}">
+                        ${hasWarnings ? '⚠ Partial Data' : '✓ Complete'}
+                    </span>
+                </div>
+
+                ${hasWarnings ? `
+                <div class="warnings">
+                    <h3>Warnings</h3>
+                    <ul>
+                        ${data._warnings.map(w => `<li>${w}</li>`).join('')}
+                    </ul>
+                </div>
+                ` : ''}
+
+                <div class="data-grid">
+                    <div class="data-item">
+                        <div class="data-label">Customer Name</div>
+                        <div class="data-value">${data.customerName || 'Not found'}</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Provider</div>
+                        <div class="data-value">${data.provider || 'Unknown'}</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">NMI</div>
+                        <div class="data-value">${data.nmi || 'Not found'}</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Address</div>
+                        <div class="data-value" style="font-size: 1em;">${data.address || 'Not found'}</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Daily Usage</div>
+                        <div class="data-value large">${data.dailyUsage || 'N/A'} <span style="font-size: 0.6em;">kWh/day</span></div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Quarterly Bill</div>
+                        <div class="data-value large">$${data.quarterlyBill || 'N/A'}</div>
+                    </div>
+                </div>
+
+                <div class="system-recommendation">
+                    <h2>Recommended Solar System</h2>
+                    <div class="recommended-system">
+                        ${recommendedSystem} Solar + ${recommendedBattery} Battery
+                    </div>
+                    <div class="savings">
+                        Estimated Annual Savings: $${annualSavings}
+                    </div>
+                    <button class="btn" onclick="copyToClipboard(${JSON.stringify(data).replace(/"/g, '&quot;')})">
+                        Copy Data to Clipboard
+                    </button>
+                </div>
+            `;
+
+            results.appendChild(resultCard);
+        }
+
+        // Display error
+        function displayError(fileName, error) {
+            const errorCard = document.createElement('div');
+            errorCard.className = 'card';
+            errorCard.innerHTML = `
+                <div class="result-header">
+                    <h2>📄 ${fileName}</h2>
+                    <span class="status error">✗ Error</span>
+                </div>
+                <div class="error-message">
+                    <strong>Parsing Failed:</strong><br>
+                    ${error.message}
+                </div>
+            `;
+            results.appendChild(errorCard);
+        }
+
+        // Utility functions
+        function copyToClipboard(data) {
+            const text = JSON.stringify(data, null, 2);
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Data copied to clipboard!');
+            });
+        }
+
+        function openConsole() {
+            alert('Press F12 (Windows/Linux) or Cmd+Option+I (Mac) to open the developer console.\n\nYou can then use:\n- testBillParser(file)\n- validateExtractedData(data)\n- compareWithExpected(fileName, data)');
+        }
+
+        function clearResults() {
+            results.innerHTML = '';
+            results.classList.remove('show');
+            fileInput.value = '';
+        }
+
+        function showInstructions() {
+            alert(`BILL PARSER INSTRUCTIONS:
+
+1. Upload one or more PDF electricity bills
+2. Parser will automatically extract:
+   - Customer name
+   - Service address
+   - NMI (National Metering Identifier)
+   - Daily usage (kWh/day)
+   - Quarterly bill amount
+   - Energy provider
+
+3. View the recommended solar system based on usage
+4. Copy the data to clipboard for further use
+
+Supported Retailers:
+• 1st Energy
+• Alinta Energy
+• Origin Energy
+• Red Energy
+• Lumo Energy
+• OVO Energy
+• Energy Australia
+
+For testing in console:
+• testBillParser(file) - Test single bill
+• testAllBills(files) - Test multiple bills
+• validateExtractedData(data) - Validate results`);
+        }
+
+        console.log('%cBill Parser Loaded Successfully!', 'color: #667eea; font-size: 20px; font-weight: bold;');
+        console.log('Try these commands:');
+        console.log('- testBillParser(file)');
+        console.log('- testAllBills(files)');
+        console.log('- validateExtractedData(data)');
+    </script>
+</body>
+</html>
