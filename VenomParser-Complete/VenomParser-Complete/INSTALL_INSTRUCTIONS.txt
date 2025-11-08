@@ -1,0 +1,112 @@
+# 🚀 INSTALLATION INSTRUCTIONS
+
+## Quick Setup (2 minutes):
+
+### Step 1: Extract This ZIP
+Extract this ZIP file directly into your existing VenomParser folder:
+```
+C:\Users\yates\VenomParser\
+```
+
+**IMPORTANT:** When asked "Replace files?", click **"Yes to All"**
+
+This will overwrite your old files with the updated versions.
+
+---
+
+### Step 2: Open Git Desktop
+
+Git Desktop will automatically detect the changes.
+
+You should see:
+- ✅ Modified: README.md (updated with demo button and new email)
+- ✅ Modified: Other files (if any)
+- ✅ New: Any new documentation files
+
+---
+
+### Step 3: Commit the Changes
+
+In Git Desktop:
+
+1. **Summary:** Type: `Update README and contact email`
+
+2. **Description:** (optional) Type:
+   ```
+   - Added live demo button to README
+   - Updated contact email to yates.joseph@pm.me
+   - Enhanced documentation
+   ```
+
+3. Click **"Commit to main"**
+
+4. Click **"Push origin"**
+
+---
+
+### Step 4: Done! 🎉
+
+Your GitHub repo is now updated with:
+- ✅ Professional README with demo button
+- ✅ New contact email everywhere
+- ✅ Better formatting and sections
+- ✅ All latest features
+
+---
+
+## View Your Updated Repo:
+
+**GitHub Repo:**
+https://github.com/cevlol/VenomParser
+
+**Live Demo:**
+https://cevlol.github.io/VenomParser/examples/bill-parser-test-page.html
+
+---
+
+## What's Included in This Package:
+
+```
+VenomParser/
+├── README.md                              ← UPDATED with demo button & new email
+├── package.json                           ← Project metadata
+├── .gitignore                            ← Git ignore rules
+│
+├── /src/
+│   ├── bill-parser-complete.js           ← v11.3 Core parser
+│   ├── bill-parser-with-ocr.js           ← v11.4 OCR version
+│   ├── updated-processBill-function.js   ← Integration code
+│   └── updated-processBill-with-ocr.js   ← OCR integration
+│
+├── /assets/
+│   ├── VenomProjectsBig.png              ← Logo (transparent)
+│   └── VenomProjectsSmall.png            ← Icon (transparent)
+│
+├── /examples/
+│   ├── bill-parser-test-page.html        ← Demo page
+│   └── test-bill-parser.js               ← Testing suite
+│
+└── /docs/
+    ├── QUICK_START.md                    ← 5-min guide
+    ├── DELIVERABLES.txt                  ← Project summary
+    ├── OCR_FEATURES.md                   ← OCR documentation
+    ├── UPDATE_SUMMARY.md                 ← What changed in v11.4
+    └── SETUP_GUIDE.md                    ← Setup instructions
+```
+
+---
+
+## Need Help?
+
+If Git Desktop doesn't detect changes:
+1. Make sure you extracted to the RIGHT folder (C:\Users\yates\VenomParser\)
+2. Check that files were actually replaced (check file timestamps)
+3. Try restarting Git Desktop
+
+---
+
+**Questions?** Email: yates.joseph@pm.me
+
+---
+
+© 2025 VenomProjects - Solar Tech Solutions
