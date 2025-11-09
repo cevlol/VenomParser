@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VenomProjects â€" Solar Proposal System</title>
+    <title>VenomProjects – Solar Proposal System</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <style>
         * {
@@ -38,7 +38,6 @@
             padding: 20px;
         }
 
-        /* Header */
         header {
             text-align: center;
             padding: 20px 0;
@@ -59,7 +58,6 @@
             text-transform: uppercase;
         }
 
-        /* Upload Section - Compact */
         .upload-section {
             background: rgba(26, 45, 74, 0.4);
             border: 1px solid rgba(0, 217, 255, 0.2);
@@ -173,16 +171,8 @@
             color: var(--venom-cyan);
         }
 
-        .terminal-output {
-            color: #9ca3af;
-        }
-
         .terminal-success {
             color: var(--venom-green);
-        }
-
-        .terminal-error {
-            color: var(--venom-red);
         }
 
         .terminal-cursor {
@@ -209,7 +199,6 @@
             }
         }
 
-        /* Progress Bar */
         .progress-container {
             display: none;
             margin-bottom: 25px;
@@ -248,14 +237,14 @@
             text-align: center;
         }
 
-        /* Proposal Section */
+        /* Proposal - Keep your existing styles from integration */
         .proposal {
             display: none;
-            animation: slideIn 0.5s ease;
         }
 
         .proposal.active {
             display: block;
+            animation: slideIn 0.5s ease;
         }
 
         @keyframes slideIn {
@@ -269,340 +258,6 @@
             }
         }
 
-        /* Compact Grid Layout */
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .info-card {
-            background: rgba(26, 45, 74, 0.4);
-            border: 1px solid rgba(0, 217, 255, 0.2);
-            border-radius: 8px;
-            padding: 15px;
-            backdrop-filter: blur(10px);
-        }
-
-        .info-card h3 {
-            font-size: 13px;
-            color: var(--venom-cyan);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-        }
-
-        .info-card p {
-            font-size: 14px;
-            color: #e5e7eb;
-        }
-
-        /* Satellite Section */
-        .satellite-section {
-            background: rgba(26, 45, 74, 0.4);
-            border: 1px solid rgba(0, 217, 255, 0.2);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 25px;
-            backdrop-filter: blur(10px);
-        }
-
-        .satellite-section h2 {
-            font-size: 18px;
-            color: var(--venom-green);
-            margin-bottom: 15px;
-        }
-
-        .satellite-container {
-            position: relative;
-            border-radius: 8px;
-            overflow: hidden;
-            aspect-ratio: 16/9;
-            background: #000;
-        }
-
-        .satellite-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .satellite-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
-            padding: 15px;
-            color: white;
-        }
-
-        .satellite-overlay h3 {
-            font-size: 14px;
-            color: var(--venom-green);
-            margin-bottom: 5px;
-        }
-
-        .satellite-overlay p {
-            font-size: 12px;
-            color: #9ca3af;
-        }
-
-        /* System Packages - Compact */
-        .packages-section {
-            margin-bottom: 25px;
-        }
-
-        .packages-section h2 {
-            font-size: 18px;
-            color: var(--venom-green);
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .packages-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 15px;
-        }
-
-        .package-card {
-            background: rgba(26, 45, 74, 0.4);
-            border: 2px solid rgba(0, 217, 255, 0.3);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .package-card:hover {
-            border-color: var(--venom-green);
-            transform: translateY(-4px);
-            box-shadow: 0 10px 30px rgba(0, 255, 135, 0.2);
-        }
-
-        .package-card.recommended {
-            border-color: var(--venom-green);
-            background: rgba(0, 255, 135, 0.08);
-        }
-
-        .package-badge {
-            display: inline-block;
-            background: var(--venom-green);
-            color: var(--venom-darker);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-        }
-
-        .package-name {
-            font-size: 20px;
-            color: var(--venom-cyan);
-            margin-bottom: 8px;
-        }
-
-        .package-size {
-            font-size: 32px;
-            font-weight: bold;
-            color: var(--venom-green);
-            margin-bottom: 8px;
-        }
-
-        .package-price {
-            font-size: 16px;
-            color: #9ca3af;
-            margin-bottom: 15px;
-        }
-
-        .package-features {
-            text-align: left;
-            margin-bottom: 15px;
-            list-style: none;
-        }
-
-        .package-features li {
-            font-size: 13px;
-            color: #e5e7eb;
-            margin-bottom: 6px;
-            padding-left: 20px;
-            position: relative;
-        }
-
-        .package-features li:before {
-            content: "✓";
-            position: absolute;
-            left: 0;
-            color: var(--venom-green);
-            font-weight: bold;
-        }
-
-        .package-btn {
-            background: linear-gradient(135deg, var(--venom-cyan), var(--venom-green));
-            color: var(--venom-darker);
-            border: none;
-            padding: 10px 24px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-        }
-
-        .package-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 20px rgba(0, 255, 135, 0.4);
-        }
-
-        /* Metrics Grid */
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .metric-card {
-            background: rgba(26, 45, 74, 0.4);
-            border: 1px solid rgba(0, 217, 255, 0.2);
-            border-radius: 8px;
-            padding: 15px;
-            text-align: center;
-        }
-
-        .metric-value {
-            font-size: 28px;
-            font-weight: bold;
-            color: var(--venom-green);
-            margin-bottom: 5px;
-        }
-
-        .metric-label {
-            font-size: 12px;
-            color: #9ca3af;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* Cost Comparison */
-        .comparison-section {
-            background: rgba(26, 45, 74, 0.4);
-            border: 1px solid rgba(0, 217, 255, 0.2);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 25px;
-        }
-
-        .comparison-section h2 {
-            font-size: 18px;
-            color: var(--venom-green);
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .comparison-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-        }
-
-        .comparison-card {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
-            padding: 15px;
-            text-align: center;
-        }
-
-        .comparison-label {
-            font-size: 12px;
-            color: #9ca3af;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-        }
-
-        .comparison-value {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .comparison-card.before .comparison-value {
-            color: var(--venom-red);
-        }
-
-        .comparison-card.after .comparison-value {
-            color: var(--venom-green);
-        }
-
-        .comparison-savings {
-            font-size: 12px;
-            color: var(--venom-green);
-            font-weight: bold;
-        }
-
-        /* CTA Buttons */
-        .cta-section {
-            text-align: center;
-            margin-top: 30px;
-        }
-
-        .cta-button {
-            background: linear-gradient(135deg, var(--venom-green), var(--venom-cyan));
-            color: var(--venom-darker);
-            border: none;
-            padding: 15px 40px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 0 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 255, 135, 0.3);
-        }
-
-        .cta-button.secondary {
-            background: transparent;
-            border: 2px solid var(--venom-cyan);
-            color: var(--venom-cyan);
-        }
-
-        .cta-button.secondary:hover {
-            background: rgba(0, 217, 255, 0.1);
-        }
-
-        /* Urgency Banner */
-        .urgency-banner {
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(251, 191, 36, 0.2));
-            border: 1px solid var(--venom-yellow);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 25px;
-            text-align: center;
-        }
-
-        .urgency-banner h3 {
-            font-size: 16px;
-            color: var(--venom-yellow);
-            margin-bottom: 8px;
-        }
-
-        .urgency-banner p {
-            font-size: 13px;
-            color: #e5e7eb;
-        }
-
-        /* Footer */
         footer {
             text-align: center;
             padding: 30px 0 20px;
@@ -610,26 +265,12 @@
             font-size: 12px;
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .logo {
                 height: 100px;
             }
-
             .upload-zone {
                 padding: 20px;
-            }
-
-            .packages-grid,
-            .metrics-grid,
-            .comparison-grid,
-            .info-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .cta-button {
-                display: block;
-                margin: 10px 0;
             }
         }
     </style>
@@ -641,7 +282,6 @@
             <p class="tagline">Next-Gen Solar Proposal System</p>
         </header>
 
-        <!-- Upload Section -->
         <div class="upload-section">
             <div class="upload-zone" id="uploadZone">
                 <div class="upload-icon">📄</div>
@@ -659,7 +299,7 @@
                 <span class="terminal-dot dot-red"></span>
                 <span class="terminal-dot dot-yellow"></span>
                 <span class="terminal-dot dot-green"></span>
-                <span class="terminal-title">VenomParser v11.5 â€" Bill Analysis Engine</span>
+                <span class="terminal-title">VenomParser v11.5 – Bill Analysis Engine</span>
             </div>
             <div class="terminal-body" id="terminalBody"></div>
         </div>
@@ -674,29 +314,24 @@
             </div>
         </div>
 
-        <!-- Proposal Section -->
-        <div class="proposal" id="proposalSection">
-            <!-- Dynamic content will be inserted here -->
-        </div>
+        <!-- Proposal (rendered by your existing integration) -->
+        <div class="proposal" id="proposalSection"></div>
 
         <footer>
-            <p>&copy; 2025 VenomProjects â€" Powered by AI & Innovation</p>
+            <p>&copy; 2025 VenomProjects – Powered by AI & Innovation</p>
         </footer>
     </div>
 
-    <script>
-        console.log('ðŸ"¥ VenomParser Elite v12.0 - Standalone loaded');
-        
-        // === GOOGLE SATELLITE IMAGERY INTEGRATION ===
-        function getGoogleSatelliteImage(address, lat, lon) {
-            const zoom = 19;
-            const size = '800x600';
-            const maptype = 'satellite';
-            const apiUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lon}&zoom=${zoom}&size=${size}&maptype=${maptype}&scale=2`;
-            return apiUrl;
-        }
+    <!-- YOUR EXISTING FILES -->
+    <script src="venomparser-v11.5-enhanced.js"></script>
+    <script src="rebate-calculator.js"></script>
+    <script src="venomvision-mvp.js"></script>
+    <script src="venomprojects-complete-integration.js"></script>
 
-        // === TERMINAL TYPEWRITER EFFECT ===
+    <script>
+        console.log('🔥 VenomParser Elite v12.0 - Integrated');
+        
+        // === ELITE TERMINAL UI WRAPPER ===
         async function typewriterEffect(text, element, speed = 20) {
             return new Promise((resolve) => {
                 let i = 0;
@@ -711,58 +346,77 @@
                         resolve();
                     }
                 }
-                
                 type();
             });
         }
 
-        async function runTerminalSequence(phases) {
+        async function runTerminalSequence() {
             const terminalBody = document.getElementById('terminalBody');
             terminalBody.innerHTML = '';
+            
+            const phases = [
+                { command: 'init --parse-bill', output: '[✓] Initializing VenomParser v11.5...' },
+                { command: 'extract --customer-data', output: '[✓] Extracting customer information...' },
+                { command: 'analyze --usage-patterns', output: '[✓] Analyzing energy usage patterns...' },
+                { command: 'fetch --satellite-imagery', output: '[✓] Retrieving satellite imagery...' },
+                { command: 'calculate --solar-potential', output: '[✓] Calculating solar generation potential...' },
+                { command: 'compute --rebates', output: '[✓] Computing Victorian rebates...' },
+                { command: 'generate --proposal', output: '[✓] Generating complete proposal...' },
+                { command: 'render --visualization', output: '[✓] Rendering proposal...' }
+            ];
             
             for (let i = 0; i < phases.length; i++) {
                 const phase = phases[i];
                 
-                // Add prompt line
+                // Prompt line
                 const promptLine = document.createElement('div');
                 promptLine.className = 'terminal-line';
                 promptLine.innerHTML = `<span class="terminal-prompt">venom@parser:~$</span> <span class="terminal-command">${phase.command}</span>`;
                 terminalBody.appendChild(promptLine);
                 
-                await new Promise(resolve => setTimeout(resolve, 300));
+                await new Promise(resolve => setTimeout(resolve, 150));
                 
-                // Add output line with typewriter effect
+                // Output line
                 const outputLine = document.createElement('div');
-                outputLine.className = `terminal-line terminal-${phase.status}`;
+                outputLine.className = 'terminal-line terminal-success';
                 terminalBody.appendChild(outputLine);
                 
-                await typewriterEffect(phase.output, outputLine, 20);
-                await new Promise(resolve => setTimeout(resolve, 400));
+                await typewriterEffect(phase.output, outputLine, 15);
+                await new Promise(resolve => setTimeout(resolve, 200));
                 
                 terminalBody.scrollTop = terminalBody.scrollHeight;
+                
+                // Update progress
+                updateProgress(((i + 1) / phases.length) * 100);
             }
             
-            // Add cursor at end
+            // Cursor
             const cursorLine = document.createElement('div');
             cursorLine.className = 'terminal-line';
             cursorLine.innerHTML = '<span class="terminal-prompt">venom@parser:~$</span> <span class="terminal-cursor"></span>';
             terminalBody.appendChild(cursorLine);
         }
 
-        // === FILE UPLOAD HANDLERS ===
+        function updateProgress(percent) {
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            
+            progressFill.style.width = `${percent}%`;
+            progressText.textContent = `Processing... ${Math.round(percent)}%`;
+            
+            if (percent === 100) {
+                progressText.textContent = 'Complete! Generating proposal...';
+            }
+        }
+
+        // === WRAP YOUR EXISTING FILE HANDLER ===
         const uploadZone = document.getElementById('uploadZone');
         const fileInput = document.getElementById('fileInput');
         const terminalWindow = document.getElementById('terminalWindow');
         const progressContainer = document.getElementById('progressContainer');
         const proposalSection = document.getElementById('proposalSection');
 
-        console.log('âœ… Upload zone:', uploadZone);
-        console.log('âœ… File input:', fileInput);
-
-        uploadZone.addEventListener('click', () => {
-            console.log('ðŸ–± Upload zone clicked');
-            fileInput.click();
-        });
+        uploadZone.addEventListener('click', () => fileInput.click());
 
         uploadZone.addEventListener('dragover', (e) => {
             e.preventDefault();
@@ -777,244 +431,72 @@
             e.preventDefault();
             uploadZone.classList.remove('dragover');
             const file = e.dataTransfer.files[0];
-            console.log('📥 File dropped:', file);
             if (file && file.type === 'application/pdf') {
-                handleFileUpload(file);
-            } else {
-                alert('Please upload a PDF file');
+                handleEliteFileUpload(file);
             }
         });
 
         fileInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
-            console.log('📁 File selected:', file);
             if (file) {
-                handleFileUpload(file);
+                handleEliteFileUpload(file);
             }
         });
 
-        async function handleFileUpload(file) {
-            console.log('ðŸš€ Starting file upload process for:', file.name);
+        async function handleEliteFileUpload(file) {
+            console.log('🚀 Elite upload started for:', file.name);
             
-            // Show terminal
+            // Show elite terminal UI
             terminalWindow.classList.add('active');
             progressContainer.classList.add('active');
             
-            // Terminal parsing sequence
-            const phases = [
-                { command: 'init --parse-bill', output: '[âœ"] Initializing VenomParser v11.5...', status: 'success' },
-                { command: 'extract --customer-data', output: '[âœ"] Extracting customer information...', status: 'success' },
-                { command: 'analyze --usage-patterns', output: '[âœ"] Analyzing energy usage patterns...', status: 'success' },
-                { command: 'fetch --satellite-imagery', output: '[âœ"] Retrieving high-resolution satellite imagery...', status: 'success' },
-                { command: 'calculate --solar-potential', output: '[âœ"] Calculating solar generation potential...', status: 'success' },
-                { command: 'compute --rebates', output: '[âœ"] Computing Victorian rebates (STC, VEU, Solar Homes)...', status: 'success' },
-                { command: 'generate --proposal', output: '[âœ"] Generating complete solar proposal...', status: 'success' },
-                { command: 'render --visualization', output: '[âœ"] Rendering proposal with satellite visualization...', status: 'success' }
-            ];
+            // Run terminal animation
+            const terminalPromise = runTerminalSequence();
             
-            // Update progress
-            updateProgress(25);
-            
-            // Run terminal sequence
-            await runTerminalSequence(phases);
-            
-            // Update progress bar
-            updateProgress(100);
-            
-            console.log('✅ Terminal sequence complete');
-            
-            // Wait a moment then render proposal
-            setTimeout(() => {
-                console.log('🎨 Rendering proposal');
-                renderProposal();
-            }, 1000);
-        }
-
-        function updateProgress(percent) {
-            const progressFill = document.getElementById('progressFill');
-            const progressText = document.getElementById('progressText');
-            
-            progressFill.style.width = `${percent}%`;
-            progressText.textContent = `Processing... ${percent}%`;
-            
-            if (percent === 100) {
-                progressText.textContent = 'Complete! Generating proposal...';
+            // Run YOUR ACTUAL PARSER in parallel
+            // This calls your existing venomprojects-complete-integration.js
+            try {
+                // Your integration file should expose a function like this:
+                // processCompleteProposal(file) or handleBillUpload(file)
+                
+                // Try to detect and call your existing function
+                if (typeof window.processCompleteProposal === 'function') {
+                    console.log('✅ Found processCompleteProposal function');
+                    await Promise.all([terminalPromise, window.processCompleteProposal(file)]);
+                } else if (typeof window.handleBillUpload === 'function') {
+                    console.log('✅ Found handleBillUpload function');
+                    await Promise.all([terminalPromise, window.handleBillUpload(file)]);
+                } else {
+                    // Fallback: let your existing code handle it
+                    console.log('⚠️ No recognized function found, triggering manual upload');
+                    await terminalPromise;
+                    
+                    // Trigger your existing file handler
+                    const event = new Event('change', { bubbles: true });
+                    const originalInput = document.querySelector('input[type="file"]:not(#fileInput)');
+                    if (originalInput) {
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(file);
+                        originalInput.files = dataTransfer.files;
+                        originalInput.dispatchEvent(event);
+                    }
+                }
+                
+                console.log('✅ Processing complete');
+                
+                // Show proposal section
+                setTimeout(() => {
+                    proposalSection.classList.add('active');
+                    proposalSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 500);
+                
+            } catch (error) {
+                console.error('❌ Error processing bill:', error);
+                alert('Error processing bill. Check console for details.');
             }
         }
 
-        function renderProposal() {
-            console.log('📊 Building proposal HTML');
-            
-            // Sample data (this will be replaced with actual parsed data)
-            const proposal = {
-                customer: {
-                    name: 'Sample Customer',
-                    address: '123 Solar Street, Inverloch VIC 3996',
-                    lat: -38.6369,
-                    lon: 145.7247
-                },
-                usage: {
-                    daily: 25,
-                    quarterly: 2250,
-                    cost: 675
-                },
-                systems: [
-                    {
-                        name: 'Standard',
-                        size: '6.6kW',
-                        price: 4990,
-                        afterRebates: 2490,
-                        features: ['16× 415W panels', 'Sungrow inverter', '10-year warranty', 'Free installation']
-                    },
-                    {
-                        name: 'Recommended',
-                        size: '10kW',
-                        price: 6990,
-                        afterRebates: 3990,
-                        recommended: true,
-                        features: ['24× 415W panels', 'Sungrow inverter', '15-year warranty', 'Battery-ready', 'Free monitoring']
-                    },
-                    {
-                        name: 'Premium',
-                        size: '13.2kW',
-                        price: 8990,
-                        afterRebates: 5490,
-                        features: ['32× 415W panels', 'Premium inverter', '25-year warranty', 'Battery-ready', 'Premium support']
-                    }
-                ],
-                savings: {
-                    monthly: 225,
-                    annually: 2700,
-                    carbonOffset: 4.5
-                }
-            };
-
-            // Build proposal HTML
-            let html = `
-                <!-- Customer Info Grid -->
-                <div class="info-grid">
-                    <div class="info-card">
-                        <h3>Customer</h3>
-                        <p><strong>${proposal.customer.name}</strong></p>
-                        <p style="font-size: 12px; color: #9ca3af;">${proposal.customer.address}</p>
-                    </div>
-                    <div class="info-card">
-                        <h3>Current Usage</h3>
-                        <p><strong>${proposal.usage.daily} kWh/day</strong></p>
-                        <p style="font-size: 12px; color: #9ca3af;">${proposal.usage.quarterly} kWh quarterly</p>
-                    </div>
-                    <div class="info-card">
-                        <h3>Current Cost</h3>
-                        <p><strong>$${proposal.usage.cost}/quarter</strong></p>
-                        <p style="font-size: 12px; color: #9ca3af;">$${(proposal.usage.cost * 4).toFixed(0)}/year</p>
-                    </div>
-                </div>
-
-                <!-- Urgency Banner -->
-                <div class="urgency-banner">
-                    <h3>⚠ï¸ Limited Time: Victorian Solar Rebates Available!</h3>
-                    <p>Solar Victoria rebates ending soon. Act now to save up to $3,500 on your system.</p>
-                </div>
-
-                <!-- Satellite Imagery -->
-                <div class="satellite-section">
-                    <h2>ðŸ›° Your Property â€" Solar Potential Analysis</h2>
-                    <div class="satellite-container">
-                        <img src="${getGoogleSatelliteImage(proposal.customer.address, proposal.customer.lat, proposal.customer.lon)}" 
-                             alt="Satellite view of property" 
-                             class="satellite-image">
-                        <div class="satellite-overlay">
-                            <h3>${proposal.customer.address}</h3>
-                            <p>Excellent solar exposure â€" North-facing roof ideal for maximum generation</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- System Packages -->
-                <div class="packages-section">
-                    <h2>☀ï¸ Recommended Solar Systems</h2>
-                    <div class="packages-grid">
-            `;
-
-            proposal.systems.forEach(system => {
-                html += `
-                    <div class="package-card ${system.recommended ? 'recommended' : ''}">
-                        ${system.recommended ? '<span class="package-badge">Best Value</span>' : ''}
-                        <h3 class="package-name">${system.name}</h3>
-                        <div class="package-size">${system.size}</div>
-                        <div class="package-price">
-                            <span style="text-decoration: line-through; color: #6b7280;">$${system.price.toLocaleString()}</span>
-                            <br>
-                            <span style="font-size: 24px; color: var(--venom-green); font-weight: bold;">$${system.afterRebates.toLocaleString()}</span>
-                            <br>
-                            <span style="font-size: 12px;">after rebates</span>
-                        </div>
-                        <ul class="package-features">
-                            ${system.features.map(f => `<li>${f}</li>`).join('')}
-                        </ul>
-                        <button class="package-btn">Get This System</button>
-                    </div>
-                `;
-            });
-
-            html += `
-                    </div>
-                </div>
-
-                <!-- Key Metrics -->
-                <div class="metrics-grid">
-                    <div class="metric-card">
-                        <div class="metric-value">$${proposal.systems[1].afterRebates.toLocaleString()}</div>
-                        <div class="metric-label">Out of Pocket</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-value">$${proposal.savings.monthly}</div>
-                        <div class="metric-label">Monthly Savings</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-value">${proposal.savings.carbonOffset}t</div>
-                        <div class="metric-label">CO₂ Offset/Year</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-value">4.2yr</div>
-                        <div class="metric-label">Payback Period</div>
-                    </div>
-                </div>
-
-                <!-- Cost Comparison -->
-                <div class="comparison-section">
-                    <h2>💰 Your Monthly Energy Costs</h2>
-                    <div class="comparison-grid">
-                        <div class="comparison-card before">
-                            <div class="comparison-label">Before Solar</div>
-                            <div class="comparison-value">$${proposal.usage.cost}</div>
-                            <div style="font-size: 12px; color: #9ca3af;">per quarter</div>
-                        </div>
-                        <div class="comparison-card after">
-                            <div class="comparison-label">After Solar</div>
-                            <div class="comparison-value">$${Math.max(0, proposal.usage.cost - proposal.savings.monthly * 3).toFixed(0)}</div>
-                            <div class="comparison-savings">Save $${proposal.savings.monthly * 3}/quarter</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- CTA -->
-                <div class="cta-section">
-                    <button class="cta-button">Book Free Consultation</button>
-                    <button class="cta-button secondary">Download Full Proposal</button>
-                </div>
-            `;
-
-            proposalSection.innerHTML = html;
-            proposalSection.classList.add('active');
-            
-            console.log('✅ Proposal rendered successfully');
-            
-            // Scroll to proposal
-            proposalSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-
-        console.log('✅ All event listeners registered');
+        console.log('✅ Elite UI initialized - ready for bill upload');
     </script>
 </body>
 </html>
