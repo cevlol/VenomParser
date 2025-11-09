@@ -91,16 +91,19 @@
         .upload-icon {
             font-size: 32px;
             margin-bottom: 10px;
+            pointer-events: none;
         }
 
         .upload-text {
             font-size: 14px;
             color: #9ca3af;
+            pointer-events: none;
         }
 
         .upload-text strong {
             color: var(--venom-cyan);
             font-size: 15px;
+            pointer-events: none;
         }
 
         #fileInput {
@@ -820,7 +823,7 @@
     <div class="container">
         <header>
             <img src="assets/VenomProjectsBig.png" alt="VenomProjects" class="logo" onerror="this.style.display='none'">
-            <p class="tagline">Next-Gen Solar + Battery Storage System</p>
+            <p class="tagline">Next-Gen Solar + Battery Storage System Calculator</p>
         </header>
 
         <div class="upload-section">
@@ -860,14 +863,18 @@
         </footer>
     </div>
 
-    <script>
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-        console.log('🔥 VenomParser v12.0 - Battery Edition');
-        
-        // ═══════════════════════════════════════════════════════════
-        //  🔋 BATTERY SYSTEM CONFIGURATIONS
-        // ═══════════════════════════════════════════════════════════
+    <!-- PDF.js Worker Configuration MUST be before any DOMContentLoaded -->
+    <script>
+        // Configure PDF.js IMMEDIATELY on script load
+        if (typeof pdfjsLib !== 'undefined') {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+            console.log('PDF.js worker configured');
+        }
+    </script>
+
+    <script>
+        console.log('VenomParser v12.0 - Battery Edition');
         
         const BATTERY_SYSTEMS = [
             {
@@ -885,7 +892,7 @@
                 retailPrice: 14100,  // Calculated: 7200 + 2800 + 4100
                 solarVicRebate: 2800,
                 stcRebate: 4100,
-                estimatedProduction: 8712,  // 6.6kW × 1.32 (Victoria avg)
+                estimatedProduction: 8712,  // 6.6kW x 1.32 (Victoria avg)
                 minUsage: 12,
                 maxUsage: 22,
                 description: 'Perfect starter battery system for moderate energy users'
@@ -972,9 +979,9 @@
             }
         ];
 
-        // ═══════════════════════════════════════════════════════════
-        //  🔍 VENOMPARSER v12.0
-        // ═══════════════════════════════════════════════════════════
+        // ???????????????????????????????????????????????????????????
+        //  ? VENOMPARSER v12.0
+        // ???????????????????????????????????????????????????????????
         
         class VenomParser {
             constructor() {
@@ -995,15 +1002,15 @@
                 // Name patterns - support ALL CAPS, mixed case, special chars, business names
                 this.namePatterns = [
                     // Explicit name fields
-                    /(?:customer\s+name|account\s+holder|name)[:\s]+([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ\s'\-&.]{2,60}(?:\s+(?:Pty|PTY|Ltd|LTD|Limited|LIMITED|Inc|INC))?)/i,
+                    /(?:customer\s+name|account\s+holder|name)[:\s]+([A-Za-z?-?][A-Za-z?-?\s'\-&.]{2,60}(?:\s+(?:Pty|PTY|Ltd|LTD|Limited|LIMITED|Inc|INC))?)/i,
                     // Titles followed by names
-                    /(?:mr|mrs|ms|miss|dr|prof)\s+([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ\s'\-&.]{2,50})/i,
+                    /(?:mr|mrs|ms|miss|dr|prof)\s+([A-Za-z?-?][A-Za-z?-?\s'\-&.]{2,50})/i,
                     // Greetings
-                    /(?:dear|hi|hello)[,\s]+([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ\s'\-&.]{2,50})/i,
+                    /(?:dear|hi|hello)[,\s]+([A-Za-z?-?][A-Za-z?-?\s'\-&.]{2,50})/i,
                     // Name before address (supports ALL CAPS and mixed)
-                    /^([A-ZÀ-Ÿa-zà-ÿ][A-ZÀ-Ÿa-zà-ÿ\s'\-&.]{2,50})\s*\n.*?(?:LOT|UNIT|SUITE|\d+.*?(?:STREET|ST|ROAD|RD|AVENUE|AVE|DRIVE|DR))/im,
+                    /^([A-Z?-?a-z?-?][A-Z?-?a-z?-?\s'\-&.]{2,50})\s*\n.*?(?:LOT|UNIT|SUITE|\d+.*?(?:STREET|ST|ROAD|RD|AVENUE|AVE|DRIVE|DR))/im,
                     // Standalone name on own line (2-4 words)
-                    /^([A-ZÀ-Ÿa-zà-ÿ][A-ZÀ-Ÿa-zà-ÿ'\-]{2,}(?:\s+[A-ZÀ-Ÿa-zà-ÿ][A-ZÀ-Ÿa-zà-ÿ'\-]{1,}){0,3})$/m
+                    /^([A-Z?-?a-z?-?][A-Z?-?a-z?-?'\-]{2,}(?:\s+[A-Z?-?a-z?-?][A-Z?-?a-z?-?'\-]{1,}){0,3})$/m
                 ];
 
                 this.nmiPatterns = [
@@ -1044,7 +1051,7 @@
 
                 this.usageChargePatterns = [
                     // Match cents or dollars per kWh
-                    /([0-9]+\.?[0-9]{0,4})\s*(?:c|¢|cents?)\s*(?:\/|per)?\s*kWh/i,
+                    /([0-9]+\.?[0-9]{0,4})\s*(?:c|cents?)\s*(?:\/|per)?\s*kWh/i,
                     /\$\s*([0-9]+\.?[0-9]{2,4})\s*(?:\/|per)?\s*kWh/i,
                     /usage[:\s\-]*(?:peak|off[\s-]?peak)?[:\s]*\$?\s*([0-9]+\.?[0-9]{2,4})/i
                 ];
@@ -1075,7 +1082,6 @@
                     /(?:email|e-mail)[:\s]*([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/i,
                     /\b([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})\b/
                 ];
-            }
 
                 this.addressPatterns = [
                     // Victorian addresses with postcodes (3000-3999, 8000-8999)
@@ -1110,7 +1116,7 @@
 
                 this.usageChargePatterns = [
                     // Match cents or dollars per kWh
-                    /([0-9]+\.?[0-9]{0,4})\s*(?:c|¢|cents?)\s*(?:\/|per)?\s*kWh/i,
+                    /([0-9]+\.?[0-9]{0,4})\s*(?:c|cents?)\s*(?:\/|per)?\s*kWh/i,
                     /\$\s*([0-9]+\.?[0-9]{2,4})\s*(?:\/|per)?\s*kWh/i,
                     /usage[:\s\-]*(?:peak|off[\s-]?peak)?[:\s]*\$?\s*([0-9]+\.?[0-9]{2,4})/i
                 ];
@@ -1180,9 +1186,9 @@
                 const result = dnspMap[prefix];
                 
                 if (result) {
-                    console.log(`✓ DNSP Decoded: ${result.name} (${result.region})`);
+                    console.log(`? DNSP Decoded: ${result.name} (${result.region})`);
                 } else {
-                    console.log(`⚠️ Unknown DNSP prefix: ${prefix}`);
+                    console.log(`? Unknown DNSP prefix: ${prefix}`);
                 }
                 
                 return result || { 
@@ -1214,7 +1220,7 @@
                 );
                 
                 if (hasPeakOffPeak || hasSmartKeywords) {
-                    console.log('✓ Smart meter detected (time-of-use tariff or smart meter keywords)');
+                    console.log('? Smart meter detected (time-of-use tariff or smart meter keywords)');
                     return {
                         type: 'Smart Meter',
                         confidence: hasPeakOffPeak ? 'High' : 'Medium',
@@ -1223,7 +1229,7 @@
                 }
                 
                 // If flat rate only, likely basic meter
-                console.log('⚠️ Basic meter assumed (no time-of-use indicators)');
+                console.log('? Basic meter assumed (no time-of-use indicators)');
                 return {
                     type: 'Basic Meter',
                     confidence: 'Low',
@@ -1239,7 +1245,7 @@
                 // Format: [Name]\n[Street Address]\n[Suburb State Postcode]
                 const nameFromAddress = this.extractNameFromAddressBlock(topSection);
                 if (nameFromAddress) {
-                    console.log('✓ Found name from address block:', nameFromAddress);
+                    console.log('? Found name from address block:', nameFromAddress);
                     return nameFromAddress;
                 }
                 
@@ -1251,20 +1257,20 @@
                         name = this.formatName(name);
                         
                         if (this.isValidName(name)) {
-                            console.log('✓ Found name from pattern:', name);
+                            console.log('? Found name from pattern:', name);
                             return name;
                         }
                     }
                 }
                 
                 // Last resort: Return "Valued Customer"
-                console.log('⚠️ Could not extract name, using default');
+                console.log('? Could not extract name, using default');
                 return 'Valued Customer';
             }
 
             extractNameFromAddressBlock(text) {
-                console.log('🔍 ===== NAME EXTRACTION START =====');
-                console.log('📄 Analyzing first 3000 chars of PDF text');
+                console.log('? ===== NAME EXTRACTION START =====');
+                console.log('? Analyzing first 3000 chars of PDF text');
                 
                 // Get the section where addresses typically appear
                 const topSection = text.substring(0, 3000);
@@ -1290,7 +1296,7 @@
                         const fullAddress = addressMatch[0];
                         const addressStartIndex = addressMatch.index;
                         
-                        console.log(`  📍 Address found: "${fullAddress.substring(0, 80).replace(/\n/g, ' | ')}"`);
+                        console.log(`  ? Address found: "${fullAddress.substring(0, 80).replace(/\n/g, ' | ')}"`);
                         
                         // Get text BEFORE this address
                         const textBeforeAddress = topSection.substring(0, addressStartIndex);
@@ -1300,10 +1306,10 @@
                             .map(l => l.trim())
                             .filter(l => l.length > 0);
                         
-                        console.log(`  📋 Lines before address: ${lines.length} lines`);
+                        console.log(`  ? Lines before address: ${lines.length} lines`);
                         
                         if (lines.length === 0) {
-                            console.log('  ❌ No content before address');
+                            console.log('  ? No content before address');
                             continue;
                         }
                         
@@ -1313,19 +1319,19 @@
                             const candidateLines = lines.slice(startLine);
                             let candidateName = candidateLines.join(' ');
                             
-                            console.log(`  🔍 Trying last ${lineCount} line(s): "${candidateName}"`);
+                            console.log(`  ? Trying last ${lineCount} line(s): "${candidateName}"`);
                             
                             // Clean and format
                             candidateName = this.formatName(candidateName);
-                            console.log(`  🎨 Formatted: "${candidateName}"`);
+                            console.log(`  ? Formatted: "${candidateName}"`);
                             
                             // Validate
                             const isValid = this.isValidName(candidateName);
-                            console.log(`  ${isValid ? '✅' : '❌'} Validation: ${isValid ? 'VALID' : 'INVALID'}`);
+                            console.log(`  ${isValid ? '?' : '?'} Validation: ${isValid ? 'VALID' : 'INVALID'}`);
                             
                             if (isValid) {
-                                console.log(`  🎉 NAME FOUND: "${candidateName}"`);
-                                console.log('🔍 ===== NAME EXTRACTION END =====');
+                                console.log(`  ? NAME FOUND: "${candidateName}"`);
+                                console.log('? ===== NAME EXTRACTION END =====');
                                 return candidateName;
                             }
                         }
@@ -1333,39 +1339,39 @@
                 }
                 
                 // STRATEGY 2: Look for explicit name fields
-                console.log('  📝 Trying explicit name field patterns...');
+                console.log('  ? Trying explicit name field patterns...');
                 const explicitPatterns = [
-                    /(?:customer\s+name|account\s+holder|name|account\s+name)[:\s]+([A-Za-zÀ-ÿ\s'\-&.]{3,70})/gi,
-                    /(?:dear|hi|hello)[,\s]+([A-Za-zÀ-ÿ\s'\-]{3,50})/gi
+                    /(?:customer\s+name|account\s+holder|name|account\s+name)[:\s]+([A-Za-z?-?\s'\-&.]{3,70})/gi,
+                    /(?:dear|hi|hello)[,\s]+([A-Za-z?-?\s'\-]{3,50})/gi
                 ];
                 
                 for (const pattern of explicitPatterns) {
                     const matches = [...topSection.matchAll(pattern)];
                     for (const match of matches) {
                         let name = match[1].trim();
-                        console.log(`  🔍 Found in explicit field: "${name}"`);
+                        console.log(`  ? Found in explicit field: "${name}"`);
                         
                         // Take only first line if multi-line
                         name = name.split('\n')[0].trim();
                         name = this.formatName(name);
                         
                         if (this.isValidName(name)) {
-                            console.log(`  🎉 NAME FOUND: "${name}"`);
-                            console.log('🔍 ===== NAME EXTRACTION END =====');
+                            console.log(`  ? NAME FOUND: "${name}"`);
+                            console.log('? ===== NAME EXTRACTION END =====');
                             return name;
                         }
                     }
                 }
                 
-                console.log('  ❌ No valid name found');
-                console.log('🔍 ===== NAME EXTRACTION END =====');
+                console.log('  ? No valid name found');
+                console.log('? ===== NAME EXTRACTION END =====');
                 return null;
             }
 
             formatName(name) {
                 if (!name) return name;
                 
-                console.log(`  🎨 Formatting: "${name}"`);
+                console.log(`  ? Formatting: "${name}"`);
                 
                 // Strip out common letterhead junk that might be included
                 const junkPrefixes = [
@@ -1379,7 +1385,7 @@
                 for (const junk of junkPrefixes) {
                     if (lowerClean.startsWith(junk)) {
                         cleanName = cleanName.substring(junk.length).trim();
-                        console.log(`  🧹 Removed prefix "${junk}"`);
+                        console.log(`  ? Removed prefix "${junk}"`);
                         break;
                     }
                 }
@@ -1403,7 +1409,7 @@
                         suffix = ' ' + this.toTitleCase(biz.replace(/[()]/g, '').trim());
                         cleanName = cleanName.substring(0, cleanName.length - biz.length).trim();
                         cleanName = cleanName.replace(/[,.\s]+$/, '').trim();
-                        console.log(`  🏢 Removed business suffix: "${biz}"`);
+                        console.log(`  ? Removed business suffix: "${biz}"`);
                         break;
                     }
                 }
@@ -1414,7 +1420,7 @@
                 const isAllCaps = letterCount > 0 && (upperCount / letterCount) > 0.8;
                 
                 if (isAllCaps) {
-                    console.log(`  🔠 Detected ALL CAPS, converting to Title Case`);
+                    console.log(`  ? Detected ALL CAPS, converting to Title Case`);
                     cleanName = this.toTitleCase(cleanName);
                 } else {
                     // Still apply special name format handling for mixed case
@@ -1426,7 +1432,7 @@
                 cleanName = cleanName.replace(/[,;]+$/, '').trim();
                 
                 const finalName = (cleanName + suffix).trim();
-                console.log(`  ✨ Final formatted name: "${finalName}"`);
+                console.log(`  ? Final formatted name: "${finalName}"`);
                 
                 return finalName;
             }
@@ -1488,25 +1494,25 @@
 
             isValidName(name) {
                 if (!name) {
-                    console.log(`    ❌ Empty name`);
+                    console.log(`    ? Empty name`);
                     return false;
                 }
                 
                 if (name.length < 2 || name.length > 80) {
-                    console.log(`    ❌ Length out of range: ${name.length} chars`);
+                    console.log(`    ? Length out of range: ${name.length} chars`);
                     return false;
                 }
                 
                 // Must have at least some letters
-                if (!/[a-zA-ZÀ-ÿ]{2,}/.test(name)) {
-                    console.log(`    ❌ Insufficient letters`);
+                if (!/[a-zA-Z?-?]{2,}/.test(name)) {
+                    console.log(`    ? Insufficient letters`);
                     return false;
                 }
                 
                 // Reject if mostly numbers
                 const digitCount = (name.match(/\d/g) || []).length;
                 if (digitCount > name.length / 3) {
-                    console.log(`    ❌ Too many digits: ${digitCount}`);
+                    console.log(`    ? Too many digits: ${digitCount}`);
                     return false;
                 }
                 
@@ -1524,7 +1530,7 @@
                 
                 for (const phrase of strictInvalidPhrases) {
                     if (lowerName === phrase || lowerName.includes(phrase)) {
-                        console.log(`    ❌ Contains invalid phrase: "${phrase}"`);
+                        console.log(`    ? Contains invalid phrase: "${phrase}"`);
                         return false;
                     }
                 }
@@ -1536,7 +1542,7 @@
                 ];
                 
                 if (justLocationWords.includes(lowerName)) {
-                    console.log(`    ❌ Just a location: "${lowerName}"`);
+                    console.log(`    ? Just a location: "${lowerName}"`);
                     return false;
                 }
                 
@@ -1550,58 +1556,58 @@
                 const words = name.trim().split(/\s+/);
                 
                 if (words.length === 1 && singleWordInvalid.includes(lowerName)) {
-                    console.log(`    ❌ Single invalid word: "${lowerName}"`);
+                    console.log(`    ? Single invalid word: "${lowerName}"`);
                     return false;
                 }
                 
                 // Reject if starts with common address indicators
                 if (/^(LOT|UNIT|APT|SUITE|PO\s+BOX|P\.O\.\s+BOX)\s+\d+/i.test(name)) {
-                    console.log(`    ❌ Starts with address indicator`);
+                    console.log(`    ? Starts with address indicator`);
                     return false;
                 }
                 
                 // Reject if it's mostly punctuation or special chars
-                const alphaCount = (name.match(/[a-zA-ZÀ-ÿ]/g) || []).length;
+                const alphaCount = (name.match(/[a-zA-Z?-?]/g) || []).length;
                 if (alphaCount < name.length * 0.5) {
-                    console.log(`    ❌ Too much punctuation/special chars`);
+                    console.log(`    ? Too much punctuation/special chars`);
                     return false;
                 }
                 
-                // ✅ ACCEPT: Business names with suffixes
+                // ? ACCEPT: Business names with suffixes
                 if (/(?:pty|ltd|limited|incorporated|inc|llc|co)\b/i.test(name)) {
-                    console.log(`    ✅ Business name detected`);
+                    console.log(`    ? Business name detected`);
                     return true;
                 }
                 
-                // ✅ ACCEPT: Names with special characters (international names)
-                if (/[À-ÿ'']/.test(name)) {
-                    console.log(`    ✅ International characters/apostrophes detected`);
+                // ? ACCEPT: Names with special characters (international names)
+                if (/[?-?'']/.test(name)) {
+                    console.log(`    ? International characters/apostrophes detected`);
                     return true;
                 }
                 
-                // ✅ ACCEPT: Multi-word names (2+ words)
+                // ? ACCEPT: Multi-word names (2+ words)
                 if (words.length >= 2 && words.length <= 6) {
                     // Each word should be at least 2 chars and start with a letter
                     const allWordsValid = words.every(word => {
-                        return word.length >= 2 && /^[A-ZÀ-Ÿa-zà-ÿ]/.test(word);
+                        return word.length >= 2 && /^[A-Z?-?a-z?-?]/.test(word);
                     });
                     
                     if (allWordsValid) {
-                        console.log(`    ✅ Valid multi-word name (${words.length} words)`);
+                        console.log(`    ? Valid multi-word name (${words.length} words)`);
                         return true;
                     } else {
-                        console.log(`    ❌ Multi-word but invalid word structure`);
+                        console.log(`    ? Multi-word but invalid word structure`);
                         return false;
                     }
                 }
                 
-                // ✅ ACCEPT: Single word names (Madonna, Cher, etc.) - must be 4+ chars
-                if (words.length === 1 && name.length >= 4 && /^[A-ZÀ-Ÿ][a-zà-ÿ]+$/.test(name)) {
-                    console.log(`    ✅ Valid single-word name`);
+                // ? ACCEPT: Single word names (Madonna, Cher, etc.) - must be 4+ chars
+                if (words.length === 1 && name.length >= 4 && /^[A-Z?-?][a-z?-?]+$/.test(name)) {
+                    console.log(`    ? Valid single-word name`);
                     return true;
                 }
                 
-                console.log(`    ❌ Failed all validation checks`);
+                console.log(`    ? Failed all validation checks`);
                 return false;
             }
 
@@ -1629,14 +1635,14 @@
                     if (result.data.phone) {
                         // Clean up phone format
                         result.data.phone = result.data.phone.replace(/\s+/g, ' ').trim();
-                        console.log('✓ Phone extracted:', result.data.phone);
+                        console.log('? Phone extracted:', result.data.phone);
                     }
                     
                     // Extract email
                     result.data.email = this.extractField(text, this.emailPatterns);
                     if (result.data.email) {
                         result.data.email = result.data.email.toLowerCase().trim();
-                        console.log('✓ Email extracted:', result.data.email);
+                        console.log('? Email extracted:', result.data.email);
                     }
                     
                     // Extract meter number
@@ -1653,7 +1659,7 @@
                     
                     // Fallback for usage if extraction failed
                     if (!result.data.dailyUsage || result.data.dailyUsage < 1) {
-                        console.log('⚠️ Could not extract valid daily usage, using default');
+                        console.log('? Could not extract valid daily usage, using default');
                         result.data.dailyUsage = 20; // Default to Victorian average
                     }
                     
@@ -1665,7 +1671,7 @@
                         if (billAmount >= 50 && billAmount <= 5000) {
                             result.data.quarterlyBill = billAmount;
                         } else {
-                            console.log('⚠️ Bill amount seems invalid:', billAmount);
+                            console.log('? Bill amount seems invalid:', billAmount);
                             // Calculate from usage if bill amount is wrong
                             result.data.quarterlyBill = Math.round(result.data.dailyUsage * 90 * 0.28);
                         }
@@ -1708,7 +1714,7 @@
 
                     return result;
                 } catch (error) {
-                    console.error('❌ Parser Error:', error);
+                    console.error('? Parser Error:', error);
                     // Return safe defaults even on error
                     result.data.customerName = 'Valued Customer';
                     result.data.dailyUsage = 20;
@@ -1726,7 +1732,7 @@
                 // Data quality warning for extreme values
                 if (dailyUsage >= 100) {
                     considerations.push({
-                        icon: '⚠️',
+                        icon: '?',
                         type: 'data',
                         title: 'Unusual Usage Data Detected',
                         description: 'The extracted usage appears extremely high. This quote is preliminary - we strongly recommend a detailed site assessment to verify your actual consumption patterns.',
@@ -1734,7 +1740,7 @@
                     });
                 } else if (dailyUsage > 60) {
                     considerations.push({
-                        icon: '🏭',
+                        icon: '?',
                         type: 'data',
                         title: 'Commercial-Scale Usage',
                         description: `Your ${dailyUsage} kWh/day usage suggests commercial or very high residential consumption. A custom system design is recommended for optimal results.`,
@@ -1742,7 +1748,7 @@
                     });
                 } else if (dailyUsage < 5) {
                     considerations.push({
-                        icon: '🔍',
+                        icon: '?',
                         type: 'data',
                         title: 'Very Low Usage Detected',
                         description: 'Your usage appears unusually low. This may be a partial bill or holiday property. Please discuss your typical usage patterns during consultation.',
@@ -1754,7 +1760,7 @@
                 if (data.dnsp) {
                     if (data.dnsp.name === 'AusNet Services') {
                         considerations.push({
-                            icon: '⚡',
+                            icon: '?',
                             type: 'network',
                             title: 'AusNet Services Territory',
                             description: `You're in our primary service area (${data.dnsp.region}). We're experienced with AusNet connection requirements and can fast-track your installation.`,
@@ -1762,7 +1768,7 @@
                         });
                     } else if (data.dnsp.name !== 'Unknown DNSP') {
                         considerations.push({
-                            icon: '🗺️',
+                            icon: '?',
                             type: 'network',
                             title: `${data.dnsp.name} Network`,
                             description: `Your property is serviced by ${data.dnsp.name} (${data.dnsp.region}). Different network connection requirements may apply.`,
@@ -1774,7 +1780,7 @@
                 // Meter type considerations
                 if (data.meterType && data.meterType.type === 'Smart Meter') {
                     considerations.push({
-                        icon: '📊',
+                        icon: '?',
                         type: 'meter',
                         title: 'Smart Meter Detected',
                         description: 'Your smart meter with time-of-use pricing is perfect for battery storage. You can shift usage to off-peak times and maximize savings by 40-60%.',
@@ -1787,7 +1793,7 @@
                     rawText.toLowerCase().includes('welcome') ||
                     rawText.toLowerCase().includes('first bill')) {
                     considerations.push({
-                        icon: '🆕',
+                        icon: '?',
                         type: 'account',
                         title: 'New Customer Account',
                         description: 'This appears to be a new customer bill. Usage estimates are based on limited historical data. Solar recommendations may be refined after a full billing quarter.',
@@ -1799,7 +1805,7 @@
                 const season = this.detectSeason(data.billDate);
                 if (season === 'winter') {
                     considerations.push({
-                        icon: '❄️',
+                        icon: '?',
                         type: 'seasonal',
                         title: 'Winter Bill Detected',
                         description: 'This bill is from winter months (Jun-Aug). Heating typically increases usage by 30-50%. Your annual average may be lower.',
@@ -1807,7 +1813,7 @@
                     });
                 } else if (season === 'summer') {
                     considerations.push({
-                        icon: '☀️',
+                        icon: '?',
                         type: 'seasonal',
                         title: 'Summer Bill Detected',
                         description: 'This bill is from summer months (Dec-Feb). Cooling costs can spike usage. Solar generates best during these months.',
@@ -1818,7 +1824,7 @@
                 // High usage analysis
                 if (dailyUsage > 35) {
                     considerations.push({
-                        icon: '⚡',
+                        icon: '?',
                         type: 'usage',
                         title: 'Very High Energy Usage',
                         description: `Your ${dailyUsage} kWh/day usage is significantly above Victorian average (15-20 kWh). Pool pumps, large appliances, or multiple occupants may be contributing factors.`,
@@ -1826,7 +1832,7 @@
                     });
                 } else if (dailyUsage < 10) {
                     considerations.push({
-                        icon: '💡',
+                        icon: '?',
                         type: 'usage',
                         title: 'Low Energy Usage',
                         description: `Your ${dailyUsage} kWh/day usage is below average. You may be away frequently or have efficient appliances. Solar sizing can be optimized accordingly.`,
@@ -1838,7 +1844,7 @@
                 const costPerKwh = quarterlyBill / (dailyUsage * 90);
                 if (costPerKwh > 0.35) {
                     considerations.push({
-                        icon: '💰',
+                        icon: '?',
                         type: 'pricing',
                         title: 'High Electricity Rates',
                         description: `You're paying approximately ${(costPerKwh * 100).toFixed(1)}c/kWh, which is above average. Solar will provide excellent ROI at these rates.`,
@@ -1849,7 +1855,7 @@
                 // Time-of-use detection
                 if (rawText.toLowerCase().includes('peak') || rawText.toLowerCase().includes('off-peak')) {
                     considerations.push({
-                        icon: '⏰',
+                        icon: '?',
                         type: 'tariff',
                         title: 'Time-of-Use Tariff Detected',
                         description: 'Your plan charges different rates for peak/off-peak. Battery storage will maximize savings by time-shifting your usage.',
@@ -1864,7 +1870,7 @@
                 // Only flag if there's evidence of actual generation, not just mention of tariffs
                 if (hasSolarExport || hasSolarCredit) {
                     considerations.push({
-                        icon: '🔄',
+                        icon: '?',
                         type: 'existing',
                         title: 'Existing Solar Detected',
                         description: 'You may have existing solar. Adding battery storage will capture excess solar generation currently exported at low feed-in rates.',
@@ -1875,7 +1881,7 @@
                 // Supply charge analysis
                 if (data.supplyCharge && data.supplyCharge > 1.20) {
                     considerations.push({
-                        icon: '📊',
+                        icon: '?',
                         type: 'charges',
                         title: 'High Daily Supply Charge',
                         description: `Your daily supply charge ($${data.supplyCharge.toFixed(2)}/day) is above average. Battery systems can't reduce this, but solar greatly reduces your usage charges.`,
@@ -1939,7 +1945,7 @@
                     for (const match of matches) {
                         const value = parseFloat(match[1]);
                         if (!isNaN(value) && value >= 0.5 && value <= 100) {
-                            console.log('✓ Found average daily usage:', value, 'kWh/day');
+                            console.log('? Found average daily usage:', value, 'kWh/day');
                             return value; // Return immediately if we find this
                         }
                     }
@@ -1967,7 +1973,7 @@
                     if (quarterlyTotal) {
                         const dailyAverage = quarterlyTotal / 90;
                         if (dailyAverage >= 0.5 && dailyAverage <= 100) {
-                            console.log('✓ Calculated from quarterly:', dailyAverage, 'kWh/day');
+                            console.log('? Calculated from quarterly:', dailyAverage, 'kWh/day');
                             return dailyAverage;
                         }
                     }
@@ -1979,14 +1985,14 @@
                 if (residentialRange.length > 0) {
                     residentialRange.sort((a, b) => a - b);
                     const median = residentialRange[Math.floor(residentialRange.length / 2)];
-                    console.log('✓ Found usage from patterns:', median, 'kWh/day');
+                    console.log('? Found usage from patterns:', median, 'kWh/day');
                     return median;
                 }
                 
                 // Otherwise return the median of all valid values
                 validUsages.sort((a, b) => a - b);
                 const median = validUsages[Math.floor(validUsages.length / 2)];
-                console.log('✓ Using median usage:', median, 'kWh/day');
+                console.log('? Using median usage:', median, 'kWh/day');
                 return median;
             }
 
@@ -2013,11 +2019,11 @@
                 // If multiple charges found (like peak/off-peak), return average
                 if (matches.length > 1) {
                     const avg = matches.reduce((a, b) => a + b, 0) / matches.length;
-                    console.log(`✓ Found multiple ${type} charges, averaging:`, matches, '→', avg);
+                    console.log(`? Found multiple ${type} charges, averaging:`, matches, '->', avg);
                     return avg.toFixed(4);
                 }
                 
-                console.log(`✓ Found ${type} charge:`, matches[0]);
+                console.log(`? Found ${type} charge:`, matches[0]);
                 return matches[0].toString();
             }
 
@@ -2058,9 +2064,9 @@
             }
         }
 
-        // ═══════════════════════════════════════════════════════════
-        //  🤖 BATTERY VIABILITY ANALYZER
-        // ═══════════════════════════════════════════════════════════
+        // ???????????????????????????????????????????????????????????
+        //  ? BATTERY VIABILITY ANALYZER
+        // ???????????????????????????????????????????????????????????
         
         function analyzeBatteryViability(billData) {
             const dailyUsage = billData.dailyUsage || 20;
@@ -2072,37 +2078,37 @@
             // Factor 1: Daily Usage (40 points max)
             if (dailyUsage >= 25) {
                 score += 40;
-                factors.push({ icon: '⚡', text: `High daily usage (${dailyUsage} kWh/day) - Battery highly recommended`, positive: true });
+                factors.push({ icon: '?', text: `High daily usage (${dailyUsage} kWh/day) - Battery highly recommended`, positive: true });
             } else if (dailyUsage >= 18) {
                 score += 30;
-                factors.push({ icon: '⚡', text: `Good daily usage (${dailyUsage} kWh/day) - Battery beneficial`, positive: true });
+                factors.push({ icon: '?', text: `Good daily usage (${dailyUsage} kWh/day) - Battery beneficial`, positive: true });
             } else if (dailyUsage >= 12) {
                 score += 20;
-                factors.push({ icon: '⚡', text: `Moderate usage (${dailyUsage} kWh/day) - Battery viable`, positive: true });
+                factors.push({ icon: '?', text: `Moderate usage (${dailyUsage} kWh/day) - Battery viable`, positive: true });
             } else {
                 score += 10;
-                factors.push({ icon: '⚠️', text: `Low usage (${dailyUsage} kWh/day) - Solar-only may be better`, positive: false });
+                factors.push({ icon: '?', text: `Low usage (${dailyUsage} kWh/day) - Solar-only may be better`, positive: false });
             }
             
             // Factor 2: Bill Amount (30 points max)
             if (quarterlyBill >= 500) {
                 score += 30;
-                factors.push({ icon: '💰', text: `High electricity costs ($${quarterlyBill}/qtr) - Strong ROI`, positive: true });
+                factors.push({ icon: '?', text: `High electricity costs ($${quarterlyBill}/qtr) - Strong ROI`, positive: true });
             } else if (quarterlyBill >= 350) {
                 score += 20;
-                factors.push({ icon: '💰', text: `Above average costs ($${quarterlyBill}/qtr) - Good savings`, positive: true });
+                factors.push({ icon: '?', text: `Above average costs ($${quarterlyBill}/qtr) - Good savings`, positive: true });
             } else {
                 score += 10;
-                factors.push({ icon: '💰', text: `Moderate costs ($${quarterlyBill}/qtr) - Standard savings`, positive: true });
+                factors.push({ icon: '?', text: `Moderate costs ($${quarterlyBill}/qtr) - Standard savings`, positive: true });
             }
             
             // Factor 3: Peak Usage Potential (15 points)
             score += 15;
-            factors.push({ icon: '🌞', text: 'Battery stores excess solar for evening use', positive: true });
+            factors.push({ icon: '?', text: 'Battery stores excess solar for evening use', positive: true });
             
             // Factor 4: Backup Power (15 points)
             score += 15;
-            factors.push({ icon: '🔋', text: 'Provides backup power during outages', positive: true });
+            factors.push({ icon: '?', text: 'Provides backup power during outages', positive: true });
             
             return {
                 score: Math.min(100, score),
@@ -2112,22 +2118,22 @@
             };
         }
 
-        // ═══════════════════════════════════════════════════════════
-        //  🎯 SYSTEM RECOMMENDATION ENGINE
-        // ═══════════════════════════════════════════════════════════
+        // ???????????????????????????????????????????????????????????
+        //  ? SYSTEM RECOMMENDATION ENGINE
+        // ???????????????????????????????????????????????????????????
         
         function recommendBatterySystem(billData, viability) {
             const dailyUsage = billData.dailyUsage || 20;
             
             // Sanity check - refuse to quote on absurd usage
             if (dailyUsage > 100) {
-                console.error('⚠️ Usage too high:', dailyUsage, 'kWh/day - likely data error');
+                console.error('? Usage too high:', dailyUsage, 'kWh/day - likely data error');
                 // Cap at 100 for safety but this should be flagged
                 billData.dailyUsage = 100;
             }
             
             if (dailyUsage < 5) {
-                console.warn('⚠️ Usage suspiciously low:', dailyUsage, 'kWh/day');
+                console.warn('? Usage suspiciously low:', dailyUsage, 'kWh/day');
                 // Minimum viable usage for solar
                 billData.dailyUsage = 10;
             }
@@ -2146,9 +2152,9 @@
             return BATTERY_SYSTEMS[BATTERY_SYSTEMS.length - 1];
         }
 
-        // ═══════════════════════════════════════════════════════════
-        //  💰 ROI CALCULATOR
-        // ═══════════════════════════════════════════════════════════
+        // ???????????????????????????????????????????????????????????
+        //  ? ROI CALCULATOR
+        // ???????????????????????????????????????????????????????????
         
         function calculateROI(billData, system) {
             const annualUsage = (billData.dailyUsage || 20) * 365;
@@ -2178,9 +2184,9 @@
             };
         }
 
-        // ═══════════════════════════════════════════════════════════
-        //  🎨 PROPOSAL RENDERER
-        // ═══════════════════════════════════════════════════════════
+        // ???????????????????????????????????????????????????????????
+        //  ? PROPOSAL RENDERER
+        // ???????????????????????????????????????????????????????????
         
         function renderProposal(billData, system, viability, roi, considerations) {
             const customer = billData;
@@ -2197,7 +2203,7 @@
                     </div>
                     
                     <div class="current-costs section">
-                        <h3>📊 Your Current Energy Costs</h3>
+                        <h3>? Your Current Energy Costs</h3>
                         <div class="cost-display">
                             <div class="big-number">$${customer.quarterlyBill || 400}/quarter</div>
                             <div class="annual-cost">= $${roi.currentAnnualCost.toLocaleString()}/year</div>
@@ -2280,7 +2286,7 @@
                     </div>
                     
                     <div class="viability-section section">
-                        <h3>🔋 Battery System Viability Analysis</h3>
+                        <h3>? Battery System Viability Analysis</h3>
                         <div class="viability-analysis">
                             <div class="viability-score">
                                 <div class="score-circle" style="--score-percent: ${viability.score}%">
@@ -2303,7 +2309,7 @@
                     </div>
                     
                     <div class="system-recommendation section">
-                        <h3>⚡ Recommended Battery System</h3>
+                        <h3>? Recommended Battery System</h3>
                         <div class="battery-system-card">
                             <span class="system-badge">RECOMMENDED FOR YOU</span>
                             
@@ -2317,11 +2323,11 @@
                                 
                                 <div class="system-details">
                                     <h4>${system.batterySystem}</h4>
-                                    <p><strong>${system.panels} × ${system.panelWattage}W</strong> ${system.panelModel} Solar Panels</p>
+                                    <p><strong>${system.panels} x ${system.panelWattage}W</strong> ${system.panelModel} Solar Panels</p>
                                     <p><strong>${system.inverterKw}kW</strong> ${system.inverter} Hybrid Inverter</p>
                                     <p><strong>${system.batteryKwh}kWh</strong> Battery Storage Capacity</p>
-                                    <p style="color: var(--venom-cyan); margin-top: 10px;">⚡ Estimated ${system.estimatedProduction.toLocaleString()} kWh/year production</p>
-                                    <p style="color: var(--venom-green);">🔋 ${system.phase} Phase System</p>
+                                    <p style="color: var(--venom-cyan); margin-top: 10px;">? Estimated ${system.estimatedProduction.toLocaleString()} kWh/year production</p>
+                                    <p style="color: var(--venom-green);">? ${system.phase} Phase System</p>
                                 </div>
                             </div>
                             
@@ -2336,7 +2342,7 @@
                                 </div>
                                 <div class="spec-item">
                                     <div class="spec-label">Backup Power</div>
-                                    <div class="spec-value">✓ Yes</div>
+                                    <div class="spec-value">? Yes</div>
                                 </div>
                                 <div class="spec-item">
                                     <div class="spec-label">Warranty</div>
@@ -2351,7 +2357,7 @@
                     </div>
                     
                     <div class="investment-section section">
-                        <h3>💰 Your Investment Breakdown</h3>
+                        <h3>? Your Investment Breakdown</h3>
                         <div class="price-breakdown">
                             <div class="price-line retail">
                                 <div class="price-line-label">
@@ -2386,13 +2392,13 @@
                             
                             <div class="payment-options">
                                 <p>Payment Options:</p>
-                                <p>💳 <strong>$${Math.round((system.priceAfterRebates * 0.9) / 52)}/week</strong> over 12 months</p>
-                                <p>💳 <strong>$${Math.round((system.priceAfterRebates * 0.9) / 12)}/month</strong> over 12 months</p>
+                                <p>? <strong>$${Math.round((system.priceAfterRebates * 0.9) / 52)}/week</strong> over 12 months</p>
+                                <p>? <strong>$${Math.round((system.priceAfterRebates * 0.9) / 12)}/month</strong> over 12 months</p>
                                 <p style="font-size: 14px; color: #9ca3af; margin-top: 10px;">Or pay in full and start saving immediately</p>
                             </div>
                             
                             <div class="eligibility-note">
-                                <strong>⚠️ Important Notes:</strong>
+                                <strong>? Important Notes:</strong>
                                 <p style="margin-bottom: 12px;">*Based on bill provided. Final price confirmed after site assessment & thorough calculation of energy usage over 12mth period.</p>
                                 <p><strong>Solar Victoria Rebate:</strong> Household income &lt;$210k/year, property value &lt;$3M, no existing solar, owner-occupier</p>
                                 <p><strong>STCs:</strong> Automatically applied at purchase - available to all Victorian properties</p>
@@ -2402,7 +2408,7 @@
                     </div>
                     
                     <div class="roi-section section">
-                        <h3>📈 Your Return on Investment</h3>
+                        <h3>? Your Return on Investment</h3>
                         <div class="roi-grid">
                             <div class="roi-card">
                                 <div class="roi-label">Year 1 Savings</div>
@@ -2427,22 +2433,22 @@
                         
                         <div class="roi-insight">
                             <p>
-                                🎯 <strong>Here's what this means:</strong> After just ${roi.paybackYears} years, your system is paid off. 
+                                ? <strong>Here's what this means:</strong> After just ${roi.paybackYears} years, your system is paid off. 
                                 For the next 20+ years, you're generating <strong>$${roi.year1Savings.toLocaleString()}/year</strong> in FREE electricity!
                             </p>
                             <p style="margin-top: 15px;">
-                                💡 Plus, your ${system.batteryKwh}kWh battery stores excess solar power during the day, 
+                                ? Plus, your ${system.batteryKwh}kWh battery stores excess solar power during the day, 
                                 so you can use it during peak evening hours when electricity is most expensive. This is where the real savings come from!
                             </p>
                             <p style="margin-top: 15px;">
-                                🔋 <strong>Bonus:</strong> During blackouts, your battery keeps your lights on while your neighbors are in the dark.
+                                ? <strong>Bonus:</strong> During blackouts, your battery keeps your lights on while your neighbors are in the dark.
                             </p>
                         </div>
                     </div>
                     
                     ${considerations && considerations.length > 0 ? `
                     <div class="considerations-section section">
-                        <h3>🎯 Important Considerations</h3>
+                        <h3>? Important Considerations</h3>
                         <div class="considerations-grid">
                             ${considerations.map(consideration => `
                                 <div class="consideration-card ${consideration.impact || 'neutral'}">
@@ -2459,27 +2465,27 @@
                     
                     <div class="cta-section section">
                         <button class="cta-button primary huge pulse" onclick="window.location.href='tel:0356729131'">
-                            📞 BOOK FREE SITE INSPECTION
+                            ? BOOK FREE SITE INSPECTION
                         </button>
                         <p class="cta-subtext">Lock in your $${(system.solarVicRebate + system.stcRebate).toLocaleString()} in rebates</p>
                         <p class="cta-payment">From just $${Math.round((system.priceAfterRebates * 0.9) / 52)}/week over 12 months</p>
-                        <p class="cta-trust">Free consultation • No obligation • Call (03) 5672 9131</p>
+                        <p class="cta-trust">Free consultation o No obligation o Call (03) 5672 9131</p>
                         
                         <div class="social-proof">
                             <div class="badge">
-                                <span class="badge-icon">✓</span>
+                                <span class="badge-icon">?</span>
                                 <span>CEC Accredited</span>
                             </div>
                             <div class="badge">
-                                <span class="badge-icon">🛡️</span>
+                                <span class="badge-icon">?</span>
                                 <span>10-Year Warranty</span>
                             </div>
                             <div class="badge">
-                                <span class="badge-icon">🏆</span>
+                                <span class="badge-icon">?</span>
                                 <span>Premium Equipment</span>
                             </div>
                             <div class="badge">
-                                <span class="badge-icon">🔋</span>
+                                <span class="badge-icon">?</span>
                                 <span>Battery Specialists</span>
                             </div>
                         </div>
@@ -2489,40 +2495,40 @@
             `;
         }
 
-        // ═══════════════════════════════════════════════════════════
-        //  🎬 MAIN PROCESSING PIPELINE
-        // ═══════════════════════════════════════════════════════════
+        // ???????????????????????????????????????????????????????????
+        //  ? MAIN PROCESSING PIPELINE
+        // ???????????????????????????????????????????????????????????
         
         async function extractTextFromPDF(file) {
-            console.log('📄 Starting PDF extraction for:', file.name);
-            console.log('📄 File size:', file.size, 'bytes');
-            console.log('📄 File type:', file.type);
+            console.log('? Starting PDF extraction for:', file.name);
+            console.log('? File size:', file.size, 'bytes');
+            console.log('? File type:', file.type);
             
             try {
-                console.log('📄 Converting to arrayBuffer...');
+                console.log('? Converting to arrayBuffer...');
                 const arrayBuffer = await file.arrayBuffer();
-                console.log('📄 ArrayBuffer created, size:', arrayBuffer.byteLength);
+                console.log('? ArrayBuffer created, size:', arrayBuffer.byteLength);
                 
-                console.log('📄 Loading PDF document...');
+                console.log('? Loading PDF document...');
                 const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
                 const pdf = await loadingTask.promise;
-                console.log('📄 PDF loaded! Pages:', pdf.numPages);
+                console.log('? PDF loaded! Pages:', pdf.numPages);
                 
                 let fullText = '';
                 for (let i = 1; i <= pdf.numPages; i++) {
-                    console.log(`📄 Processing page ${i}/${pdf.numPages}...`);
+                    console.log(`? Processing page ${i}/${pdf.numPages}...`);
                     const page = await pdf.getPage(i);
                     const textContent = await page.getTextContent();
                     const pageText = textContent.items.map(item => item.str).join(' ');
                     fullText += pageText + '\n';
-                    console.log(`📄 Page ${i} extracted: ${pageText.length} chars`);
+                    console.log(`? Page ${i} extracted: ${pageText.length} chars`);
                 }
                 
-                console.log('📄 Total extracted text length:', fullText.length);
+                console.log('? Total extracted text length:', fullText.length);
                 return fullText;
             } catch (error) {
-                console.error('❌ PDF extraction failed:', error);
-                console.error('❌ Error stack:', error.stack);
+                console.error('? PDF extraction failed:', error);
+                console.error('? Error stack:', error.stack);
                 throw error;
             }
         }
@@ -2532,14 +2538,14 @@
             terminalBody.innerHTML = '';
             
             const phases = [
-                { command: 'init --parse-bill', output: '[✓] Initializing VenomParser v12.0...' },
-                { command: 'extract --customer-data', output: '[✓] Extracting customer information...' },
-                { command: 'analyze --usage-patterns', output: '[✓] Analyzing energy usage patterns...' },
-                { command: 'calculate --battery-viability', output: '[✓] Calculating battery system viability...' },
-                { command: 'recommend --optimal-system', output: '[✓] Selecting optimal battery system...' },
-                { command: 'compute --rebates', output: '[✓] Computing Victorian rebates...' },
-                { command: 'calculate --roi', output: '[✓] Calculating return on investment...' },
-                { command: 'generate --proposal', output: '[✓] Generating complete proposal...' }
+                { command: 'init --parse-bill', output: '[?] Initializing VenomParser v12.0...' },
+                { command: 'extract --customer-data', output: '[?] Extracting customer information...' },
+                { command: 'analyze --usage-patterns', output: '[?] Analyzing energy usage patterns...' },
+                { command: 'calculate --battery-viability', output: '[?] Calculating battery system viability...' },
+                { command: 'recommend --optimal-system', output: '[?] Selecting optimal battery system...' },
+                { command: 'compute --rebates', output: '[?] Computing Victorian rebates...' },
+                { command: 'calculate --roi', output: '[?] Calculating return on investment...' },
+                { command: 'generate --proposal', output: '[?] Generating complete proposal...' }
             ];
             
             for (let i = 0; i < phases.length; i++) {
@@ -2575,9 +2581,9 @@
         }
 
         async function handleFileUpload(file) {
-            console.log('🚀 Processing:', file.name);
-            console.log('🚀 File type:', file.type);
-            console.log('🚀 File size:', file.size);
+            console.log('? Processing:', file.name);
+            console.log('? File type:', file.type);
+            console.log('? File size:', file.size);
             
             const terminalWindow = document.getElementById('terminalWindow');
             const progressContainer = document.getElementById('progressContainer');
@@ -2588,51 +2594,51 @@
             proposalSection.classList.remove('active');
             
             try {
-                console.log('🚀 Starting terminal sequence...');
+                console.log('? Starting terminal sequence...');
                 const terminalPromise = runTerminalSequence();
                 
-                console.log('🚀 Creating VenomParser...');
+                console.log('? Creating VenomParser...');
                 const venomParser = new VenomParser();
                 
-                console.log('🚀 Extracting PDF text...');
+                console.log('? Extracting PDF text...');
                 const pdfText = await extractTextFromPDF(file);
                 
-                console.log('🚀 PDF text extracted, length:', pdfText.length);
+                console.log('? PDF text extracted, length:', pdfText.length);
                 
                 if (!pdfText || pdfText.length < 100) {
                     throw new Error('Unable to extract text from PDF - text too short or empty');
                 }
                 
-                console.log('🚀 Parsing bill...');
+                console.log('? Parsing bill...');
                 const parseResult = venomParser.parseBill(pdfText);
                 
                 if (!parseResult.success) {
-                    console.error('❌ Parse failed:', parseResult);
+                    console.error('? Parse failed:', parseResult);
                     throw new Error('Could not extract required data from bill');
                 }
                 
-                console.log('✅ Bill parsed:', parseResult);
+                console.log('? Bill parsed:', parseResult);
                 
                 // Analyze battery viability
-                console.log('🚀 Analyzing battery viability...');
+                console.log('? Analyzing battery viability...');
                 const viability = analyzeBatteryViability(parseResult.data);
-                console.log('✅ Viability:', viability);
+                console.log('? Viability:', viability);
                 
                 // Recommend system
-                console.log('🚀 Recommending system...');
+                console.log('? Recommending system...');
                 const recommendedSystem = recommendBatterySystem(parseResult.data, viability);
-                console.log('✅ System:', recommendedSystem);
+                console.log('? System:', recommendedSystem);
                 
                 // Calculate ROI
-                console.log('🚀 Calculating ROI...');
+                console.log('? Calculating ROI...');
                 const roi = calculateROI(parseResult.data, recommendedSystem);
-                console.log('✅ ROI:', roi);
+                console.log('? ROI:', roi);
                 
-                console.log('🚀 Waiting for terminal animation...');
+                console.log('? Waiting for terminal animation...');
                 await terminalPromise;
                 
                 // Render proposal
-                console.log('🚀 Rendering proposal...');
+                console.log('? Rendering proposal...');
                 const proposalHTML = renderProposal(parseResult.data, recommendedSystem, viability, roi, parseResult.considerations);
                 proposalSection.innerHTML = proposalHTML;
                 
@@ -2641,50 +2647,50 @@
                     proposalSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }, 500);
                 
-                console.log('✅ Complete!');
+                console.log('? Complete!');
                 
             } catch (error) {
-                console.error('❌ Error:', error);
-                console.error('❌ Error message:', error.message);
-                console.error('❌ Error stack:', error.stack);
+                console.error('? Error:', error);
+                console.error('? Error message:', error.message);
+                console.error('? Error stack:', error.stack);
                 alert('Error processing bill: ' + error.message + '\n\nCheck console for details.');
                 terminalWindow.classList.remove('active');
                 progressContainer.classList.remove('active');
             }
         }
 
-        // ═══════════════════════════════════════════════════════════
-        //  📤 FILE UPLOAD HANDLERS
-        // ═══════════════════════════════════════════════════════════
+        // ???????????????????????????????????????????????????????????
+        //  ? FILE UPLOAD HANDLERS
+        // ???????????????????????????????????????????????????????????
         
         document.addEventListener('DOMContentLoaded', function() {
             // Check if PDF.js loaded
             if (typeof pdfjsLib === 'undefined') {
-                console.error('❌ PDF.js library not loaded!');
+                console.error('? PDF.js library not loaded!');
                 alert('Error: PDF.js library failed to load. Please refresh the page.');
                 return;
             }
             
-            console.log('✅ PDF.js loaded:', pdfjsLib.version);
+            console.log('? PDF.js loaded:', pdfjsLib.version);
             
             // Configure PDF.js worker
             pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-            console.log('✅ PDF.js worker configured');
+            console.log('? PDF.js worker configured');
             
             const uploadZone = document.getElementById('uploadZone');
             const fileInput = document.getElementById('fileInput');
             
-            console.log('🔍 Upload elements:', { uploadZone, fileInput });
+            console.log('? Upload elements:', { uploadZone, fileInput });
             
             if (!uploadZone || !fileInput) {
-                console.error('❌ Upload elements not found!');
+                console.error('? Upload elements not found!');
                 return;
             }
 
             uploadZone.addEventListener('click', () => {
-                console.log('📁 Upload zone clicked - triggering file input');
+                console.log('? Upload zone clicked - triggering file input');
                 fileInput.click();
-                console.log('📁 File input click triggered');
+                console.log('? File input click triggered');
             });
 
             uploadZone.addEventListener('dragover', (e) => {
@@ -2699,34 +2705,34 @@
             uploadZone.addEventListener('drop', (e) => {
                 e.preventDefault();
                 uploadZone.classList.remove('dragover');
-                console.log('📁 File dropped!');
+                console.log('? File dropped!');
                 const file = e.dataTransfer.files[0];
-                console.log('📁 Dropped file:', file);
-                console.log('📁 File type:', file ? file.type : 'no file');
+                console.log('? Dropped file:', file);
+                console.log('? File type:', file ? file.type : 'no file');
                 if (file && file.type === 'application/pdf') {
-                    console.log('📁 Valid PDF, processing...');
+                    console.log('? Valid PDF, processing...');
                     handleFileUpload(file);
                 } else {
-                    console.error('❌ Invalid file type:', file ? file.type : 'no file');
+                    console.error('? Invalid file type:', file ? file.type : 'no file');
                     alert('Please upload a PDF file');
                 }
             });
 
             fileInput.addEventListener('change', (e) => {
-                console.log('📄 File input change event fired!');
-                console.log('📄 Event:', e);
-                console.log('📄 Files:', e.target.files);
-                console.log('📄 File selected:', e.target.files[0]);
+                console.log('? File input change event fired!');
+                console.log('? Event:', e);
+                console.log('? Files:', e.target.files);
+                console.log('? File selected:', e.target.files[0]);
                 const file = e.target.files[0];
                 if (file) {
-                    console.log('📄 File exists, calling handleFileUpload...');
+                    console.log('? File exists, calling handleFileUpload...');
                     handleFileUpload(file);
                 } else {
-                    console.error('❌ No file in event!');
+                    console.error('? No file in event!');
                 }
             });
 
-            console.log('✅ VenomParser Battery Edition initialized - Upload handlers ready');
+            console.log('? VenomParser Battery Edition initialized - Upload handlers ready');
         });
     </script>
 </body>
