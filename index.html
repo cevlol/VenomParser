@@ -1032,20 +1032,36 @@
         
         // Enhance proposal with packages, metrics, and comparisons
         function enhanceProposalUI(proposal) {
+            console.log('🎨 Enhancing proposal UI...', proposal);
+            
             const container = document.getElementById('proposalContainer');
             const proposalElem = container.querySelector('.proposal');
             
-            if (!proposalElem) return;
+            if (!proposalElem) {
+                console.warn('⚠️ No proposal element found');
+                return;
+            }
             
-            // Find satellite section to insert packages after
+            console.log('✓ Found proposal element');
+            
+            // Find the best insertion point - look for multiple possible sections
             const sections = proposalElem.querySelectorAll('.section');
-            let satelliteSection = null;
+            console.log(`✓ Found ${sections.length} sections`);
             
+            let insertAfter = null;
+            
+            // Try to find satellite/roof section
             sections.forEach(section => {
-                if (section.textContent.includes('Your Roof with Solar')) {
-                    satelliteSection = section;
+                const h3 = section.querySelector('h3');
+                if (h3 && (h3.textContent.includes('Roof') || h3.textContent.includes('Solar'))) {
+                    insertAfter = section;
                 }
             });
+            
+            // Fallback: insert after first section (usually current costs)
+            if (!insertAfter && sections.length > 0) {
+                insertAfter = sections[0];
+            }
             
             // Calculate recommended system sizes based on usage
             const currentUsage = proposal.billData?.usage || 15; // kWh/day
@@ -1193,14 +1209,18 @@
                 </div>
             `;
             
-            // Insert sections after satellite section
-            if (satelliteSection) {
-                satelliteSection.insertAdjacentHTML('afterend', packagesHTML + metricsHTML + comparisonHTML + includedHTML);
+            // Insert sections after the appropriate location
+            if (insertAfter) {
+                console.log('✓ Inserting enhanced sections after:', insertAfter);
+                insertAfter.insertAdjacentHTML('afterend', packagesHTML + metricsHTML + comparisonHTML + includedHTML);
+                console.log('✅ Enhanced sections inserted successfully');
             } else {
-                // If no satellite section found, insert at beginning of proposal
+                console.warn('⚠️ No insertion point found, using fallback');
+                // Fallback: insert at beginning of proposal
                 const firstSection = proposalElem.querySelector('.section');
                 if (firstSection) {
-                    firstSection.insertAdjacentHTML('beforebegin', packagesHTML + metricsHTML + comparisonHTML + includedHTML);
+                    firstSection.insertAdjacentHTML('afterend', packagesHTML + metricsHTML + comparisonHTML + includedHTML);
+                    console.log('✅ Enhanced sections inserted (fallback)');
                 }
             }
         }
@@ -1216,8 +1236,10 @@
             // Render proposal
             renderCompleteProposal(proposal, 'proposalContainer');
             
-            // Enhance proposal with new sections
-            enhanceProposalUI(proposal);
+            // Enhance proposal with new sections (with delay to ensure DOM is ready)
+            setTimeout(() => {
+                enhanceProposalUI(proposal);
+            }, 200);
             
             // Scroll to proposal
             setTimeout(() => {
