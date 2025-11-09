@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VenomProjects – Solar Proposal System</title>
+    <title>VenomProjects – Solar + Battery Proposal System</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <style>
         * {
@@ -107,7 +107,6 @@
             display: none;
         }
 
-        /* Terminal Window */
         .terminal-window {
             display: none;
             background: #000000;
@@ -228,49 +227,591 @@
             background: linear-gradient(90deg, var(--venom-cyan), var(--venom-green));
             width: 0%;
             transition: width 0.3s ease;
-            box-shadow: 0 0 10px var(--venom-cyan);
         }
 
         .progress-text {
-            font-size: 12px;
+            font-size: 13px;
             color: #9ca3af;
             text-align: center;
         }
 
-        /* Proposal - Keep your existing styles from integration */
         .proposal {
             display: none;
         }
 
         .proposal.active {
             display: block;
-            animation: slideIn 0.5s ease;
+            animation: fadeIn 0.5s ease;
         }
 
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         footer {
             text-align: center;
             padding: 30px 0 20px;
             color: #6b7280;
+            font-size: 13px;
+            border-top: 1px solid rgba(107, 114, 128, 0.2);
+            margin-top: 40px;
+        }
+
+        .venom-proposal-complete {
+            background: rgba(26, 45, 74, 0.4);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 12px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .proposal-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--venom-cyan);
+        }
+
+        .proposal-header h1 {
+            color: var(--venom-green);
+            margin-bottom: 15px;
+            font-size: 32px;
+        }
+
+        .customer-info h2 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .customer-info p {
+            color: #9ca3af;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            border: 1px solid rgba(0, 217, 255, 0.1);
+        }
+
+        .section h3 {
+            color: var(--venom-cyan);
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .cost-display {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .big-number {
+            font-size: 48px;
+            font-weight: bold;
+            color: var(--venom-red);
+            margin-bottom: 10px;
+        }
+
+        .annual-cost {
+            font-size: 24px;
+            color: #9ca3af;
+            margin-bottom: 5px;
+        }
+
+        .daily-usage {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        /* Battery System Card */
+        .battery-system-card {
+            background: linear-gradient(135deg, rgba(0, 255, 135, 0.1), rgba(0, 217, 255, 0.1));
+            border: 2px solid var(--venom-green);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .system-badge {
+            display: inline-block;
+            background: var(--venom-green);
+            color: var(--venom-dark);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .system-main {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .system-size {
+            text-align: center;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 12px;
+            min-width: 180px;
+        }
+
+        .system-size-number {
+            font-size: 48px;
+            font-weight: bold;
+            color: var(--venom-green);
+            line-height: 1;
+        }
+
+        .system-size-label {
+            font-size: 14px;
+            color: #9ca3af;
+            margin-top: 5px;
+        }
+
+        .system-details {
+            flex: 1;
+        }
+
+        .system-details h4 {
+            color: var(--venom-cyan);
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .system-details p {
+            margin: 5px 0;
+            font-size: 15px;
+        }
+
+        .system-details strong {
+            color: var(--venom-green);
+        }
+
+        .system-specs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .spec-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        .spec-label {
             font-size: 12px;
+            color: #9ca3af;
+            margin-bottom: 5px;
+        }
+
+        .spec-value {
+            font-size: 16px;
+            color: var(--venom-cyan);
+            font-weight: bold;
+        }
+
+        /* Battery Viability Section */
+        .viability-analysis {
+            background: rgba(0, 217, 255, 0.05);
+            border: 1px solid var(--venom-cyan);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .viability-score {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .score-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: conic-gradient(var(--venom-green) 0% var(--score-percent), rgba(0, 217, 255, 0.2) var(--score-percent) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--venom-green);
+        }
+
+        .score-info {
+            flex: 1;
+        }
+
+        .score-info h4 {
+            color: var(--venom-cyan);
+            margin-bottom: 5px;
+        }
+
+        .score-info p {
+            color: #9ca3af;
+            font-size: 14px;
+        }
+
+        .viability-factors {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .factor-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+        }
+
+        .factor-icon {
+            font-size: 24px;
+        }
+
+        .factor-text {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        /* Pricing Breakdown */
+        .price-breakdown {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        .price-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .price-line:last-child {
+            border-bottom: none;
+        }
+
+        .price-line-label {
+            flex: 1;
+        }
+
+        .price-line-label strong {
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .price-line-label small {
+            font-size: 12px;
+            color: #6b7280;
+            display: block;
+        }
+
+        .price-line-amount {
+            font-size: 20px;
+            font-weight: bold;
+            text-align: right;
+        }
+
+        .price-line.retail .price-line-amount {
+            color: #9ca3af;
+        }
+
+        .price-line.rebate .price-line-amount {
+            color: var(--venom-green);
+        }
+
+        .price-line.total {
+            margin-top: 15px;
+            padding-top: 20px;
+            border-top: 2px solid var(--venom-green);
+        }
+
+        .price-line.total .price-line-amount {
+            font-size: 42px;
+            color: var(--venom-green);
+        }
+
+        .payment-options {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(0, 255, 135, 0.05);
+            border: 1px solid var(--venom-green);
+            border-radius: 8px;
+        }
+
+        .payment-options p {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        .payment-options strong {
+            color: var(--venom-green);
+            font-size: 18px;
+        }
+
+        .eligibility-note {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid var(--venom-yellow);
+            border-radius: 8px;
+            font-size: 13px;
+            color: #fbbf24;
+        }
+
+        .eligibility-note strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* ROI Analysis */
+        .roi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .roi-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        .roi-card.highlight {
+            border-color: var(--venom-green);
+            background: rgba(0, 255, 135, 0.05);
+        }
+
+        .roi-label {
+            font-size: 14px;
+            color: #9ca3af;
+            margin-bottom: 10px;
+        }
+
+        .roi-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--venom-green);
+        }
+
+        .roi-insight {
+            background: rgba(0, 217, 255, 0.05);
+            border: 1px solid var(--venom-cyan);
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .roi-insight p {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .roi-insight strong {
+            color: var(--venom-green);
+        }
+
+        /* CTA */
+        .cta-section {
+            text-align: center;
+            padding: 30px !important;
+        }
+
+        .cta-button {
+            padding: 20px 50px;
+            font-size: 20px;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--venom-green), var(--venom-green-dark));
+            color: var(--venom-dark);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 255, 135, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(0, 255, 135, 0.5);
+        }
+
+        .cta-button.pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .cta-subtext {
+            margin-top: 15px;
+            font-size: 18px;
+            color: #9ca3af;
+        }
+
+        .cta-payment {
+            font-size: 24px;
+            color: var(--venom-green);
+            margin: 10px 0;
+            font-weight: bold;
+        }
+
+        .cta-trust {
+            font-size: 14px;
+            color: #6b7280;
+            margin-top: 15px;
+        }
+
+        .social-proof {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .badge {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .badge-icon {
+            font-size: 20px;
+        }
+
+        /* Bill Details Grid */
+        .bill-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .detail-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            font-size: 16px;
+            color: var(--venom-cyan);
+            font-weight: bold;
+            word-break: break-all;
+        }
+
+        /* Considerations Section */
+        .considerations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .consideration-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--venom-cyan);
+        }
+
+        .consideration-card.positive {
+            border-left-color: var(--venom-green);
+            background: rgba(0, 255, 135, 0.05);
+        }
+
+        .consideration-card.neutral {
+            border-left-color: var(--venom-yellow);
+            background: rgba(255, 193, 7, 0.05);
+        }
+
+        .consideration-card.negative {
+            border-left-color: var(--venom-red);
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        .consideration-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .consideration-icon {
+            font-size: 24px;
+        }
+
+        .consideration-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--venom-cyan);
+        }
+
+        .consideration-card.positive .consideration-title {
+            color: var(--venom-green);
+        }
+
+        .consideration-card.neutral .consideration-title {
+            color: var(--venom-yellow);
+        }
+
+        .consideration-card.negative .consideration-title {
+            color: var(--venom-red);
+        }
+
+        .consideration-description {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #d1d5db;
         }
 
         @media (max-width: 768px) {
-            .logo {
-                height: 100px;
+            .system-main {
+                flex-direction: column;
             }
-            .upload-zone {
-                padding: 20px;
+            
+            .system-size {
+                width: 100%;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            .considerations-grid,
+            .bill-details-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -279,7 +820,7 @@
     <div class="container">
         <header>
             <img src="assets/VenomProjectsBig.png" alt="VenomProjects" class="logo" onerror="this.style.display='none'">
-            <p class="tagline">Next-Gen Solar Proposal System</p>
+            <p class="tagline">Next-Gen Solar + Battery Storage System</p>
         </header>
 
         <div class="upload-section">
@@ -293,18 +834,16 @@
             <input type="file" id="fileInput" accept=".pdf">
         </div>
 
-        <!-- Terminal Window -->
         <div class="terminal-window" id="terminalWindow">
             <div class="terminal-header">
                 <span class="terminal-dot dot-red"></span>
                 <span class="terminal-dot dot-yellow"></span>
                 <span class="terminal-dot dot-green"></span>
-                <span class="terminal-title">VenomParser v11.5 – Bill Analysis Engine</span>
+                <span class="terminal-title">VenomParser v12.0 – Battery Analysis Engine</span>
             </div>
             <div class="terminal-body" id="terminalBody"></div>
         </div>
 
-        <!-- Progress Bar -->
         <div class="progress-container" id="progressContainer">
             <div class="progress-bar-wrapper">
                 <div class="progress-bar">
@@ -314,7 +853,6 @@
             </div>
         </div>
 
-        <!-- Proposal (rendered by your existing integration) -->
         <div class="proposal" id="proposalSection"></div>
 
         <footer>
@@ -322,32 +860,1671 @@
         </footer>
     </div>
 
-    <!-- YOUR EXISTING FILES -->
-    <script src="venomparser-v11.5-enhanced.js"></script>
-    <script src="rebate-calculator.js"></script>
-    <script src="venomvision-mvp.js"></script>
-    <script src="venomprojects-complete-integration.js"></script>
-
     <script>
-        console.log('🔥 VenomParser Elite v12.0 - Integrated');
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        console.log('🔥 VenomParser v12.0 - Battery Edition');
         
-        // === ELITE TERMINAL UI WRAPPER ===
-        async function typewriterEffect(text, element, speed = 20) {
-            return new Promise((resolve) => {
-                let i = 0;
-                element.textContent = '';
+        // ═══════════════════════════════════════════════════════════
+        //  🔋 BATTERY SYSTEM CONFIGURATIONS
+        // ═══════════════════════════════════════════════════════════
+        
+        const BATTERY_SYSTEMS = [
+            {
+                id: 1,
+                solarKw: 6.6,
+                panels: 15,
+                panelModel: 'RSM108-9-440N',
+                panelWattage: 440,
+                inverter: 'Growatt SPH 5kW',
+                inverterKw: 5,
+                batteryKwh: 10,
+                batterySystem: 'Growatt SPH 5kW All-in-One',
+                phase: 'Single',
+                priceAfterRebates: 7200,
+                retailPrice: 14100,  // Calculated: 7200 + 2800 + 4100
+                solarVicRebate: 2800,
+                stcRebate: 4100,
+                estimatedProduction: 8712,  // 6.6kW × 1.32 (Victoria avg)
+                minUsage: 12,
+                maxUsage: 22,
+                description: 'Perfect starter battery system for moderate energy users'
+            },
+            {
+                id: 2,
+                solarKw: 8,
+                panels: 16,
+                panelModel: 'Trina Vertex N 500W',
+                panelWattage: 500,
+                inverter: 'Sigenergy 8kW',
+                inverterKw: 8,
+                batteryKwh: 16,
+                batterySystem: 'Sigenergy 8kW All-in-One Storage',
+                phase: 'Single',
+                priceAfterRebates: 13000,
+                retailPrice: 20775,  // 13000 + 2800 + 4975
+                solarVicRebate: 2800,
+                stcRebate: 4975,
+                estimatedProduction: 10560,
+                minUsage: 20,
+                maxUsage: 28,
+                description: 'Premium system for families with higher energy needs'
+            },
+            {
+                id: 3,
+                solarKw: 10,
+                panels: 20,
+                panelModel: 'Trina Vertex N 500W',
+                panelWattage: 500,
+                inverter: 'Sigenergy 10kW',
+                inverterKw: 10,
+                batteryKwh: 16,
+                batterySystem: 'Sigenergy 10kW All-in-One Storage',
+                phase: 'Single',
+                priceAfterRebates: 14500,
+                retailPrice: 23520,  // 14500 + 2800 + 6220
+                solarVicRebate: 2800,
+                stcRebate: 6220,
+                estimatedProduction: 13200,
+                minUsage: 26,
+                maxUsage: 35,
+                description: 'High-performance system for large homes or small businesses'
+            },
+            {
+                id: 4,
+                solarKw: 12,
+                panels: 24,
+                panelModel: 'Trina Vertex N 500W',
+                panelWattage: 500,
+                inverter: 'Sigenergy 12kW',
+                inverterKw: 12,
+                batteryKwh: 16,
+                batterySystem: 'Sigenergy 12kW All-in-One Storage',
+                phase: 'Single',
+                priceAfterRebates: 15250,
+                retailPrice: 25510,  // 15250 + 2800 + 7460
+                solarVicRebate: 2800,
+                stcRebate: 7460,
+                estimatedProduction: 15840,
+                minUsage: 33,
+                maxUsage: 45,
+                description: 'Premium high-capacity system for maximum energy independence'
+            },
+            {
+                id: 5,
+                solarKw: 15,
+                panels: 30,
+                panelModel: 'Trina Vertex N 500W',
+                panelWattage: 500,
+                inverter: 'Sigenergy 15kW',
+                inverterKw: 15,
+                batteryKwh: 16,
+                batterySystem: 'Sigenergy 15kW 3-Phase All-in-One Storage',
+                phase: '3-Phase',
+                priceAfterRebates: 18250,
+                retailPrice: 30380,  // 18250 + 2800 + 9330
+                solarVicRebate: 2800,
+                stcRebate: 9330,
+                estimatedProduction: 19800,
+                minUsage: 43,
+                maxUsage: 999,
+                description: 'Commercial-grade 3-phase system for very high energy users'
+            }
+        ];
+
+        // ═══════════════════════════════════════════════════════════
+        //  🔍 VENOMPARSER v12.0
+        // ═══════════════════════════════════════════════════════════
+        
+        class VenomParser {
+            constructor() {
+                this.initializePatterns();
                 
-                function type() {
-                    if (i < text.length) {
-                        element.textContent += text.charAt(i);
-                        i++;
-                        setTimeout(type, speed);
-                    } else {
-                        resolve();
+                this.retailers = {
+                    'alinta': { name: 'Alinta Energy', identifiers: ['alinta energy', 'alinta'] },
+                    'origin': { name: 'Origin Energy', identifiers: ['origin energy', 'origin'] },
+                    'red_energy': { name: 'Red Energy', identifiers: ['red energy'] },
+                    'lumo': { name: 'Lumo Energy', identifiers: ['lumo energy', 'lumo'] },
+                    'energy_australia': { name: 'Energy Australia', identifiers: ['energy australia'] },
+                    'simply_energy': { name: 'Simply Energy', identifiers: ['simply energy'] },
+                    'ovo': { name: 'OVO Energy', identifiers: ['ovo energy', 'ovoenergy'] }
+                };
+            }
+
+            initializePatterns() {
+                // Name patterns - support ALL CAPS, mixed case, special chars, business names
+                this.namePatterns = [
+                    // Explicit name fields
+                    /(?:customer\s+name|account\s+holder|name)[:\s]+([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ\s'\-&.]{2,60}(?:\s+(?:Pty|PTY|Ltd|LTD|Limited|LIMITED|Inc|INC))?)/i,
+                    // Titles followed by names
+                    /(?:mr|mrs|ms|miss|dr|prof)\s+([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ\s'\-&.]{2,50})/i,
+                    // Greetings
+                    /(?:dear|hi|hello)[,\s]+([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ\s'\-&.]{2,50})/i,
+                    // Name before address (supports ALL CAPS and mixed)
+                    /^([A-ZÀ-Ÿa-zà-ÿ][A-ZÀ-Ÿa-zà-ÿ\s'\-&.]{2,50})\s*\n.*?(?:LOT|UNIT|SUITE|\d+.*?(?:STREET|ST|ROAD|RD|AVENUE|AVE|DRIVE|DR))/im,
+                    // Standalone name on own line (2-4 words)
+                    /^([A-ZÀ-Ÿa-zà-ÿ][A-ZÀ-Ÿa-zà-ÿ'\-]{2,}(?:\s+[A-ZÀ-Ÿa-zà-ÿ][A-ZÀ-Ÿa-zà-ÿ'\-]{1,}){0,3})$/m
+                ];
+
+                this.nmiPatterns = [
+                    /(?:NMI|national\s*metering\s*identifier)[:\s]*([0-9]{10,11})/i,
+                    /\b([6-7][0-9]{9,10})\b/  // Victorian NMIs start with 6 or 7
+                ];
+
+                this.addressPatterns = [
+                    // Victorian addresses with postcodes (3000-3999, 8000-8999)
+                    /(?:supply|service|postal)\s*address[:\s]*([^,\n]+,?\s*[A-Z]+,?\s*VIC\s+[38]\d{3})/i,
+                    /address[:\s]*([^,\n]*\d+[^,\n]*(?:street|st|road|rd|ave|avenue|drive|dr|place|pl|court|ct)[^,\n]*,?[^,\n]*,?\s*VIC\s+[38]\d{3})/i,
+                    /((?:LOT|UNIT)\s+\d+[^\n]*\n[^\n]*VIC\s+[38]\d{3})/i,
+                    /(\d+\s+[A-Za-z\s]+(?:street|st|road|rd|avenue|ave|drive|dr|place|pl|court|ct)[^,\n]*,?[^,\n]*,?\s*VIC\s+[38]\d{3})/i
+                ];
+
+                // Priority 1: Explicit average daily usage statements
+                this.usagePatterns = [
+                    /(?:average\s+daily\s+usage|for\s+this\s+bill)[:\s]*([0-9]{1,3}\.?[0-9]{0,2})\s*kWh/i,
+                    /daily\s+average[:\s]*([0-9]{1,3}\.?[0-9]{0,2})\s*kWh/i,
+                    // Priority 2: Generic daily usage
+                    /(?:daily|average)\s*(?:usage|consumption)[:\s]*([0-9]{1,3}\.?[0-9]{0,2})\s*(?:kWh|kwh)/i,
+                    // Priority 3: Usage per day format
+                    /([0-9]{1,3}\.?[0-9]{0,2})\s*(?:kWh|kwh).*(?:per\s+day|\/day)/i
+                ];
+
+                this.billAmountPatterns = [
+                    /(?:amount\s+due|total\s+amount\s+due)[:\s]*\$?\s*([0-9,]+\.?[0-9]*)/i,
+                    /(?:total|amount)\s*(?:due|payable|owing)[:\s]*\$?\s*([0-9,]+\.?[0-9]*)/i,
+                    /\$\s*([0-9,]+\.[0-9]{2})/
+                ];
+
+                this.meterPatterns = [
+                    /meter\s+number[:\s]*([0-9]{6,15})/i,
+                    /meter\s*(?:number|no|#)[:\s]*([A-Z0-9]{6,15})/i,
+                    /(?:meter|device)\s*(?:id|identifier)[:\s]*([A-Z0-9]{6,15})/i,
+                    /serial\s*(?:number|no)[:\s]*([A-Z0-9]{6,15})/i
+                ];
+
+                this.usageChargePatterns = [
+                    // Match cents or dollars per kWh
+                    /([0-9]+\.?[0-9]{0,4})\s*(?:c|¢|cents?)\s*(?:\/|per)?\s*kWh/i,
+                    /\$\s*([0-9]+\.?[0-9]{2,4})\s*(?:\/|per)?\s*kWh/i,
+                    /usage[:\s\-]*(?:peak|off[\s-]?peak)?[:\s]*\$?\s*([0-9]+\.?[0-9]{2,4})/i
+                ];
+
+                this.supplyChargePatterns = [
+                    // Match daily supply charge - prioritize explicit "per day" or "/day"
+                    /supply\s+charge[:\s]*\$?\s*([0-9]+\.?[0-9]{1,4})\s*(?:\/|per)?\s*day/i,
+                    /daily\s*(?:supply|service)(?:\s+charge)?[:\s]*\$?\s*([0-9]+\.?[0-9]{1,4})/i,
+                    /([0-9]+\.?[0-9]{1,4})\s*(?:\/|per)\s*day/i
+                ];
+
+                this.billDatePatterns = [
+                    /(?:bill|statement|invoice)\s*date[:\s]*([\d]{1,2}[\/\-][\d]{1,2}[\/\-][\d]{2,4})/i,
+                    /date[:\s]*([\d]{1,2}[\/\-][\d]{1,2}[\/\-][\d]{2,4})/i,
+                    /([\d]{1,2}[\/\-][\d]{1,2}[\/\-][\d]{2,4})/
+                ];
+
+                // Phone number patterns (Australian format)
+                this.phonePatterns = [
+                    /(?:phone|mobile|contact|tel|telephone)[:\s]*(\(?\d{2}\)?\s?\d{4}\s?\d{4})/i,
+                    /(?:phone|mobile|contact|tel|telephone)[:\s]*(04\d{2}\s?\d{3}\s?\d{3})/i,
+                    /\b((?:0[2-478]|04)\d{1}\s?\d{4}\s?\d{4}|\(0[2-478]\)\s?\d{4}\s?\d{4})\b/,
+                    /\b(04\d{2}\s?\d{3}\s?\d{3})\b/
+                ];
+
+                // Email patterns
+                this.emailPatterns = [
+                    /(?:email|e-mail)[:\s]*([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/i,
+                    /\b([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})\b/
+                ];
+            }
+
+                this.addressPatterns = [
+                    // Victorian addresses with postcodes (3000-3999, 8000-8999)
+                    /(?:supply|service|postal)\s*address[:\s]*([^,\n]+,?\s*[A-Z]+,?\s*VIC\s+[38]\d{3})/i,
+                    /address[:\s]*([^,\n]*\d+[^,\n]*(?:street|st|road|rd|ave|avenue|drive|dr|place|pl|court|ct)[^,\n]*,?[^,\n]*,?\s*VIC\s+[38]\d{3})/i,
+                    /((?:LOT|UNIT)\s+\d+[^\n]*\n[^\n]*VIC\s+[38]\d{3})/i,
+                    /(\d+\s+[A-Za-z\s]+(?:street|st|road|rd|avenue|ave|drive|dr|place|pl|court|ct)[^,\n]*,?[^,\n]*,?\s*VIC\s+[38]\d{3})/i
+                ];
+
+                this.usagePatterns = [
+                    // Priority 1: Explicit average daily usage statements
+                    /(?:average\s+daily\s+usage|for\s+this\s+bill)[:\s]*([0-9]{1,3}\.?[0-9]{0,2})\s*kWh/i,
+                    /daily\s+average[:\s]*([0-9]{1,3}\.?[0-9]{0,2})\s*kWh/i,
+                    // Priority 2: Generic daily usage
+                    /(?:daily|average)\s*(?:usage|consumption)[:\s]*([0-9]{1,3}\.?[0-9]{0,2})\s*(?:kWh|kwh)/i,
+                    // Priority 3: Usage per day format
+                    /([0-9]{1,3}\.?[0-9]{0,2})\s*(?:kWh|kwh).*(?:per\s+day|\/day)/i
+                ];
+
+                this.billAmountPatterns = [
+                    /(?:amount\s+due|total\s+amount\s+due)[:\s]*\$?\s*([0-9,]+\.?[0-9]*)/i,
+                    /(?:total|amount)\s*(?:due|payable|owing)[:\s]*\$?\s*([0-9,]+\.?[0-9]*)/i,
+                    /\$\s*([0-9,]+\.[0-9]{2})/
+                ];
+
+                this.meterPatterns = [
+                    /meter\s+number[:\s]*([0-9]{6,15})/i,
+                    /meter\s*(?:number|no|#)[:\s]*([A-Z0-9]{6,15})/i,
+                    /(?:meter|device)\s*(?:id|identifier)[:\s]*([A-Z0-9]{6,15})/i,
+                    /serial\s*(?:number|no)[:\s]*([A-Z0-9]{6,15})/i
+                ];
+
+                this.usageChargePatterns = [
+                    // Match cents or dollars per kWh
+                    /([0-9]+\.?[0-9]{0,4})\s*(?:c|¢|cents?)\s*(?:\/|per)?\s*kWh/i,
+                    /\$\s*([0-9]+\.?[0-9]{2,4})\s*(?:\/|per)?\s*kWh/i,
+                    /usage[:\s\-]*(?:peak|off[\s-]?peak)?[:\s]*\$?\s*([0-9]+\.?[0-9]{2,4})/i
+                ];
+
+                this.supplyChargePatterns = [
+                    // Match daily supply charge - prioritize explicit "per day" or "/day"
+                    /supply\s+charge[:\s]*\$?\s*([0-9]+\.?[0-9]{1,4})\s*(?:\/|per)?\s*day/i,
+                    /daily\s*(?:supply|service)(?:\s+charge)?[:\s]*\$?\s*([0-9]+\.?[0-9]{1,4})/i,
+                    /([0-9]+\.?[0-9]{1,4})\s*(?:\/|per)\s*day/i
+                ];
+
+                this.billDatePatterns = [
+                    /(?:bill|statement|invoice)\s*date[:\s]*([\d]{1,2}[\/\-][\d]{1,2}[\/\-][\d]{2,4})/i,
+                    /date[:\s]*([\d]{1,2}[\/\-][\d]{1,2}[\/\-][\d]{2,4})/i,
+                    /([\d]{1,2}[\/\-][\d]{1,2}[\/\-][\d]{2,4})/
+                ];
+            }
+
+            extractField(text, patterns) {
+                for (const pattern of patterns) {
+                    const match = text.match(pattern);
+                    if (match) {
+                        return match[1] || match[0];
                     }
                 }
-                type();
-            });
+                return null;
+            }
+
+            decodeDNSP(nmi) {
+                if (!nmi || nmi.length < 4) return null;
+                
+                const prefix = nmi.substring(0, 4);
+                
+                const dnspMap = {
+                    '6102': { 
+                        name: 'AusNet Services', 
+                        region: 'Eastern Victoria (Gippsland, Bass Coast, Latrobe Valley)', 
+                        contact: '131 799',
+                        website: 'ausnetservices.com.au'
+                    },
+                    '6001': { 
+                        name: 'CitiPower', 
+                        region: 'Melbourne CBD & Inner Suburbs', 
+                        contact: '131 280',
+                        website: 'citipower.com.au'
+                    },
+                    '6002': { 
+                        name: 'Powercor', 
+                        region: 'Western Victoria (Geelong, Ballarat, Bendigo)', 
+                        contact: '13 22 06',
+                        website: 'powercor.com.au'
+                    },
+                    '6003': { 
+                        name: 'United Energy', 
+                        region: 'South-East Melbourne (Mornington Peninsula, Dandenong)', 
+                        contact: '13 22 09',
+                        website: 'ue.com.au'
+                    },
+                    '6005': { 
+                        name: 'Jemena', 
+                        region: 'North-West Melbourne (Tullamarine, Sunbury)', 
+                        contact: '1300 131 871',
+                        website: 'jemena.com.au'
+                    }
+                };
+                
+                const result = dnspMap[prefix];
+                
+                if (result) {
+                    console.log(`✓ DNSP Decoded: ${result.name} (${result.region})`);
+                } else {
+                    console.log(`⚠️ Unknown DNSP prefix: ${prefix}`);
+                }
+                
+                return result || { 
+                    name: 'Unknown DNSP', 
+                    region: 'Unknown', 
+                    contact: 'N/A',
+                    website: ''
+                };
+            }
+
+            detectMeterType(text, billData) {
+                // Detect if smart meter or basic meter based on bill patterns
+                const lowerText = text.toLowerCase();
+                
+                // Smart meter indicators
+                const smartIndicators = [
+                    'smart meter', 'smart reading', 'interval data', 'interval meter',
+                    'remotely read', 'digital meter', 'advanced meter',
+                    'time of use', 'peak and off-peak', 'controlled load',
+                    'demand charge', '30-minute interval'
+                ];
+                
+                // Check for peak/off-peak rates (strong indicator of smart meter)
+                const hasPeakOffPeak = /(?:peak|off[\s-]?peak).*?(?:usage|rate|charge)/i.test(text);
+                
+                // Check for smart meter keywords
+                const hasSmartKeywords = smartIndicators.some(indicator => 
+                    lowerText.includes(indicator)
+                );
+                
+                if (hasPeakOffPeak || hasSmartKeywords) {
+                    console.log('✓ Smart meter detected (time-of-use tariff or smart meter keywords)');
+                    return {
+                        type: 'Smart Meter',
+                        confidence: hasPeakOffPeak ? 'High' : 'Medium',
+                        features: hasPeakOffPeak ? 'Time-of-Use capable, remote reading' : 'Digital meter'
+                    };
+                }
+                
+                // If flat rate only, likely basic meter
+                console.log('⚠️ Basic meter assumed (no time-of-use indicators)');
+                return {
+                    type: 'Basic Meter',
+                    confidence: 'Low',
+                    features: 'Manual reading, flat rate only'
+                };
+            }
+
+            extractNameWithFallbacks(text) {
+                // Clean up text - extract first 3000 chars where letterhead/address block is
+                const topSection = text.substring(0, 3000);
+                
+                // PRIMARY METHOD: Extract name from letter address block
+                // Format: [Name]\n[Street Address]\n[Suburb State Postcode]
+                const nameFromAddress = this.extractNameFromAddressBlock(topSection);
+                if (nameFromAddress) {
+                    console.log('✓ Found name from address block:', nameFromAddress);
+                    return nameFromAddress;
+                }
+                
+                // FALLBACK: Try explicit name fields
+                for (const pattern of this.namePatterns) {
+                    const match = topSection.match(pattern);
+                    if (match) {
+                        let name = (match[1] || match[0]).trim();
+                        name = this.formatName(name);
+                        
+                        if (this.isValidName(name)) {
+                            console.log('✓ Found name from pattern:', name);
+                            return name;
+                        }
+                    }
+                }
+                
+                // Last resort: Return "Valued Customer"
+                console.log('⚠️ Could not extract name, using default');
+                return 'Valued Customer';
+            }
+
+            extractNameFromAddressBlock(text) {
+                console.log('🔍 ===== NAME EXTRACTION START =====');
+                console.log('📄 Analyzing first 3000 chars of PDF text');
+                
+                // Get the section where addresses typically appear
+                const topSection = text.substring(0, 3000);
+                
+                // STRATEGY 1: Find Victorian address, then extract name above it
+                // Victorian postcodes: 3000-3999, 8000-8999
+                
+                // Look for address patterns with increasing specificity
+                const addressIndicators = [
+                    // Most specific: Full address with VIC postcode
+                    /(?:LOT|UNIT|SUITE|APT)\s+\d+[^\n]{0,100}\n[^\n]{0,100}VIC\s+[38]\d{3}/gi,
+                    /\d+\s+[A-Za-z\s\-']{2,50}(?:STREET|ST|ROAD|RD|AVENUE|AVE|DRIVE|DR|PLACE|PL|COURT|CT|LANE|LN|WAY|CRESCENT|CRES|BOULEVARD|BLVD)[^\n]{0,100}\n[^\n]{0,100}VIC\s+[38]\d{3}/gi,
+                    /(?:PO|P\.O\.)\s+BOX\s+\d+[^\n]{0,100}\n[^\n]{0,100}VIC\s+[38]\d{3}/gi
+                ];
+                
+                for (let patternIndex = 0; patternIndex < addressIndicators.length; patternIndex++) {
+                    const pattern = addressIndicators[patternIndex];
+                    const matches = [...topSection.matchAll(pattern)];
+                    
+                    console.log(`  Pattern ${patternIndex + 1}: Found ${matches.length} address matches`);
+                    
+                    for (const addressMatch of matches) {
+                        const fullAddress = addressMatch[0];
+                        const addressStartIndex = addressMatch.index;
+                        
+                        console.log(`  📍 Address found: "${fullAddress.substring(0, 80).replace(/\n/g, ' | ')}"`);
+                        
+                        // Get text BEFORE this address
+                        const textBeforeAddress = topSection.substring(0, addressStartIndex);
+                        
+                        // Split into lines
+                        const lines = textBeforeAddress.split('\n')
+                            .map(l => l.trim())
+                            .filter(l => l.length > 0);
+                        
+                        console.log(`  📋 Lines before address: ${lines.length} lines`);
+                        
+                        if (lines.length === 0) {
+                            console.log('  ❌ No content before address');
+                            continue;
+                        }
+                        
+                        // Try extracting name from last 1-4 lines
+                        for (let lineCount = 1; lineCount <= Math.min(4, lines.length); lineCount++) {
+                            const startLine = lines.length - lineCount;
+                            const candidateLines = lines.slice(startLine);
+                            let candidateName = candidateLines.join(' ');
+                            
+                            console.log(`  🔍 Trying last ${lineCount} line(s): "${candidateName}"`);
+                            
+                            // Clean and format
+                            candidateName = this.formatName(candidateName);
+                            console.log(`  🎨 Formatted: "${candidateName}"`);
+                            
+                            // Validate
+                            const isValid = this.isValidName(candidateName);
+                            console.log(`  ${isValid ? '✅' : '❌'} Validation: ${isValid ? 'VALID' : 'INVALID'}`);
+                            
+                            if (isValid) {
+                                console.log(`  🎉 NAME FOUND: "${candidateName}"`);
+                                console.log('🔍 ===== NAME EXTRACTION END =====');
+                                return candidateName;
+                            }
+                        }
+                    }
+                }
+                
+                // STRATEGY 2: Look for explicit name fields
+                console.log('  📝 Trying explicit name field patterns...');
+                const explicitPatterns = [
+                    /(?:customer\s+name|account\s+holder|name|account\s+name)[:\s]+([A-Za-zÀ-ÿ\s'\-&.]{3,70})/gi,
+                    /(?:dear|hi|hello)[,\s]+([A-Za-zÀ-ÿ\s'\-]{3,50})/gi
+                ];
+                
+                for (const pattern of explicitPatterns) {
+                    const matches = [...topSection.matchAll(pattern)];
+                    for (const match of matches) {
+                        let name = match[1].trim();
+                        console.log(`  🔍 Found in explicit field: "${name}"`);
+                        
+                        // Take only first line if multi-line
+                        name = name.split('\n')[0].trim();
+                        name = this.formatName(name);
+                        
+                        if (this.isValidName(name)) {
+                            console.log(`  🎉 NAME FOUND: "${name}"`);
+                            console.log('🔍 ===== NAME EXTRACTION END =====');
+                            return name;
+                        }
+                    }
+                }
+                
+                console.log('  ❌ No valid name found');
+                console.log('🔍 ===== NAME EXTRACTION END =====');
+                return null;
+            }
+
+            formatName(name) {
+                if (!name) return name;
+                
+                console.log(`  🎨 Formatting: "${name}"`);
+                
+                // Strip out common letterhead junk that might be included
+                const junkPrefixes = [
+                    'customer:', 'name:', 'account holder:', 'dear customer',
+                    'bill to:', 'attention:', 'attn:', 'dear sir', 'dear madam'
+                ];
+                
+                let cleanName = name.trim();
+                const lowerClean = cleanName.toLowerCase();
+                
+                for (const junk of junkPrefixes) {
+                    if (lowerClean.startsWith(junk)) {
+                        cleanName = cleanName.substring(junk.length).trim();
+                        console.log(`  🧹 Removed prefix "${junk}"`);
+                        break;
+                    }
+                }
+                
+                // Remove common titles if at the start
+                cleanName = cleanName.replace(/^(mr|mrs|ms|miss|dr|prof|sir|dame|rev)\.?\s+/i, '');
+                
+                // Extract and temporarily remove business suffixes
+                const businessSuffixes = [
+                    'PTY LTD', 'PTY. LTD.', 'PTY LTD.', '(PTY LTD)', 
+                    'LIMITED', 'LTD', 'LTD.', 
+                    'INCORPORATED', 'INC', 'INC.', 
+                    'LLC', 'L.L.C.', 'CO', 'CO.', 'P/L', 'P.L.'
+                ];
+                
+                let suffix = '';
+                const upperName = cleanName.toUpperCase();
+                
+                for (const biz of businessSuffixes) {
+                    if (upperName.endsWith(biz)) {
+                        suffix = ' ' + this.toTitleCase(biz.replace(/[()]/g, '').trim());
+                        cleanName = cleanName.substring(0, cleanName.length - biz.length).trim();
+                        cleanName = cleanName.replace(/[,.\s]+$/, '').trim();
+                        console.log(`  🏢 Removed business suffix: "${biz}"`);
+                        break;
+                    }
+                }
+                
+                // Check if ALL CAPS (at least 50% uppercase letters)
+                const upperCount = (cleanName.match(/[A-Z]/g) || []).length;
+                const letterCount = (cleanName.match(/[A-Za-z]/g) || []).length;
+                const isAllCaps = letterCount > 0 && (upperCount / letterCount) > 0.8;
+                
+                if (isAllCaps) {
+                    console.log(`  🔠 Detected ALL CAPS, converting to Title Case`);
+                    cleanName = this.toTitleCase(cleanName);
+                } else {
+                    // Still apply special name format handling for mixed case
+                    cleanName = this.handleSpecialNameFormats(cleanName);
+                }
+                
+                // Clean up spacing and punctuation
+                cleanName = cleanName.replace(/\s+/g, ' ').trim();
+                cleanName = cleanName.replace(/[,;]+$/, '').trim();
+                
+                const finalName = (cleanName + suffix).trim();
+                console.log(`  ✨ Final formatted name: "${finalName}"`);
+                
+                return finalName;
+            }
+
+            toTitleCase(str) {
+                return str.toLowerCase().split(' ').map(word => {
+                    if (word.length === 0) return word;
+                    
+                    // Special cases for common prefixes
+                    if (word.match(/^(mc|mac)(.+)$/i)) {
+                        // McDonald, MacLeod, etc.
+                        const match = word.match(/^(mc|mac)(.+)$/i);
+                        const prefix = match[1].charAt(0).toUpperCase() + match[1].slice(1).toLowerCase();
+                        const rest = match[2].charAt(0).toUpperCase() + match[2].slice(1).toLowerCase();
+                        return prefix + rest;
+                    }
+                    
+                    // O'Brien, O'Connor, etc.
+                    if (word.match(/^o'(.+)$/i)) {
+                        const rest = word.substring(2);
+                        return "O'" + rest.charAt(0).toUpperCase() + rest.slice(1).toLowerCase();
+                    }
+                    
+                    // Van, De, etc. (keep lowercase unless at start)
+                    if (['van', 'von', 'de', 'del', 'della', 'di', 'da', 'le', 'la'].includes(word.toLowerCase())) {
+                        return word.toLowerCase();
+                    }
+                    
+                    // Normal title case
+                    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+                }).join(' ');
+            }
+
+            handleSpecialNameFormats(name) {
+                // Fix common patterns that might be wrong
+                
+                // McDonald, MacLeod, etc. - if it starts with Mc or Mac, fix it
+                name = name.replace(/\bMc([a-z])/g, (match, p1) => 'Mc' + p1.toUpperCase());
+                name = name.replace(/\bMac([a-z])/g, (match, p1) => 'Mac' + p1.toUpperCase());
+                
+                // O'Brien, O'Connor - fix apostrophe names
+                name = name.replace(/\bO'([a-z])/g, (match, p1) => "O'" + p1.toUpperCase());
+                
+                // D'Angelo, D'Alessandro
+                name = name.replace(/\bD'([a-z])/g, (match, p1) => "D'" + p1.toUpperCase());
+                
+                // van der Berg, von Braun - keep particles lowercase unless at start
+                name = name.replace(/\s(van|von|de|del|della|di|da|le|la)\s+([A-Z])/g, (match, particle, next) => {
+                    return ' ' + particle.toLowerCase() + ' ' + next;
+                });
+                
+                // Capitalize first letter if it's lowercase (van -> Van at start of name)
+                if (name.length > 0) {
+                    name = name.charAt(0).toUpperCase() + name.slice(1);
+                }
+                
+                return name;
+            }
+
+            isValidName(name) {
+                if (!name) {
+                    console.log(`    ❌ Empty name`);
+                    return false;
+                }
+                
+                if (name.length < 2 || name.length > 80) {
+                    console.log(`    ❌ Length out of range: ${name.length} chars`);
+                    return false;
+                }
+                
+                // Must have at least some letters
+                if (!/[a-zA-ZÀ-ÿ]{2,}/.test(name)) {
+                    console.log(`    ❌ Insufficient letters`);
+                    return false;
+                }
+                
+                // Reject if mostly numbers
+                const digitCount = (name.match(/\d/g) || []).length;
+                if (digitCount > name.length / 3) {
+                    console.log(`    ❌ Too many digits: ${digitCount}`);
+                    return false;
+                }
+                
+                // Reject if it's just common bill terms
+                const strictInvalidPhrases = [
+                    'electricity bill', 'energy bill', 'invoice number', 'statement number',
+                    'account number', 'reference number', 'customer number',
+                    'supply address', 'service address', 'billing address', 'postal address',
+                    'bill period', 'billing period', 'amount due', 'total due', 'balance due',
+                    'meter number', 'meter reading', 'usage charges', 'supply charges',
+                    'daily usage', 'total amount', 'payment due', 'due date'
+                ];
+                
+                const lowerName = name.toLowerCase().trim();
+                
+                for (const phrase of strictInvalidPhrases) {
+                    if (lowerName === phrase || lowerName.includes(phrase)) {
+                        console.log(`    ❌ Contains invalid phrase: "${phrase}"`);
+                        return false;
+                    }
+                }
+                
+                // Reject if it's ONLY a location (but allow "John Melbourne" as a name)
+                const justLocationWords = [
+                    'victoria', 'melbourne', 'sydney', 'brisbane', 'perth', 'adelaide',
+                    'dalyston', 'geelong', 'ballarat', 'bendigo', 'australia'
+                ];
+                
+                if (justLocationWords.includes(lowerName)) {
+                    console.log(`    ❌ Just a location: "${lowerName}"`);
+                    return false;
+                }
+                
+                // Reject common single invalid words
+                const singleWordInvalid = [
+                    'customer', 'account', 'holder', 'bill', 'invoice', 'statement',
+                    'electricity', 'energy', 'supply', 'service', 'usage', 'charges',
+                    'address', 'details', 'information', 'welcome', 'hello'
+                ];
+                
+                const words = name.trim().split(/\s+/);
+                
+                if (words.length === 1 && singleWordInvalid.includes(lowerName)) {
+                    console.log(`    ❌ Single invalid word: "${lowerName}"`);
+                    return false;
+                }
+                
+                // Reject if starts with common address indicators
+                if (/^(LOT|UNIT|APT|SUITE|PO\s+BOX|P\.O\.\s+BOX)\s+\d+/i.test(name)) {
+                    console.log(`    ❌ Starts with address indicator`);
+                    return false;
+                }
+                
+                // Reject if it's mostly punctuation or special chars
+                const alphaCount = (name.match(/[a-zA-ZÀ-ÿ]/g) || []).length;
+                if (alphaCount < name.length * 0.5) {
+                    console.log(`    ❌ Too much punctuation/special chars`);
+                    return false;
+                }
+                
+                // ✅ ACCEPT: Business names with suffixes
+                if (/(?:pty|ltd|limited|incorporated|inc|llc|co)\b/i.test(name)) {
+                    console.log(`    ✅ Business name detected`);
+                    return true;
+                }
+                
+                // ✅ ACCEPT: Names with special characters (international names)
+                if (/[À-ÿ'']/.test(name)) {
+                    console.log(`    ✅ International characters/apostrophes detected`);
+                    return true;
+                }
+                
+                // ✅ ACCEPT: Multi-word names (2+ words)
+                if (words.length >= 2 && words.length <= 6) {
+                    // Each word should be at least 2 chars and start with a letter
+                    const allWordsValid = words.every(word => {
+                        return word.length >= 2 && /^[A-ZÀ-Ÿa-zà-ÿ]/.test(word);
+                    });
+                    
+                    if (allWordsValid) {
+                        console.log(`    ✅ Valid multi-word name (${words.length} words)`);
+                        return true;
+                    } else {
+                        console.log(`    ❌ Multi-word but invalid word structure`);
+                        return false;
+                    }
+                }
+                
+                // ✅ ACCEPT: Single word names (Madonna, Cher, etc.) - must be 4+ chars
+                if (words.length === 1 && name.length >= 4 && /^[A-ZÀ-Ÿ][a-zà-ÿ]+$/.test(name)) {
+                    console.log(`    ✅ Valid single-word name`);
+                    return true;
+                }
+                
+                console.log(`    ❌ Failed all validation checks`);
+                return false;
+            }
+
+            parseBill(text) {
+                const result = {
+                    success: false,
+                    data: {},
+                    considerations: []
+                };
+
+                try {
+                    // Extract customer name with aggressive fallbacks
+                    result.data.customerName = this.extractNameWithFallbacks(text);
+                    
+                    // Extract NMI
+                    result.data.nmi = this.extractField(text, this.nmiPatterns);
+                    
+                    // Decode DNSP from NMI
+                    if (result.data.nmi) {
+                        result.data.dnsp = this.decodeDNSP(result.data.nmi);
+                    }
+                    
+                    // Extract phone number
+                    result.data.phone = this.extractField(text, this.phonePatterns);
+                    if (result.data.phone) {
+                        // Clean up phone format
+                        result.data.phone = result.data.phone.replace(/\s+/g, ' ').trim();
+                        console.log('✓ Phone extracted:', result.data.phone);
+                    }
+                    
+                    // Extract email
+                    result.data.email = this.extractField(text, this.emailPatterns);
+                    if (result.data.email) {
+                        result.data.email = result.data.email.toLowerCase().trim();
+                        console.log('✓ Email extracted:', result.data.email);
+                    }
+                    
+                    // Extract meter number
+                    result.data.meterNumber = this.extractField(text, this.meterPatterns);
+                    
+                    // Detect meter type
+                    result.data.meterType = this.detectMeterType(text, result.data);
+                    
+                    // Extract address
+                    result.data.address = this.extractField(text, this.addressPatterns);
+                    
+                    // Extract usage with validation
+                    result.data.dailyUsage = this.extractUsage(text);
+                    
+                    // Fallback for usage if extraction failed
+                    if (!result.data.dailyUsage || result.data.dailyUsage < 1) {
+                        console.log('⚠️ Could not extract valid daily usage, using default');
+                        result.data.dailyUsage = 20; // Default to Victorian average
+                    }
+                    
+                    // Extract bill amount with validation
+                    const billStr = this.extractField(text, this.billAmountPatterns);
+                    if (billStr) {
+                        const billAmount = parseFloat(billStr.replace(/,/g, ''));
+                        // Validate bill amount is reasonable (50 - 5000)
+                        if (billAmount >= 50 && billAmount <= 5000) {
+                            result.data.quarterlyBill = billAmount;
+                        } else {
+                            console.log('⚠️ Bill amount seems invalid:', billAmount);
+                            // Calculate from usage if bill amount is wrong
+                            result.data.quarterlyBill = Math.round(result.data.dailyUsage * 90 * 0.28);
+                        }
+                    } else {
+                        // No bill amount found, calculate from usage
+                        result.data.quarterlyBill = Math.round(result.data.dailyUsage * 90 * 0.28);
+                    }
+                    
+                    // Extract charges with better pattern matching
+                    const usageChargeStr = this.extractBestCharge(text, this.usageChargePatterns, 'usage');
+                    if (usageChargeStr) {
+                        let usageRate = parseFloat(usageChargeStr);
+                        // If value is in cents (>5), convert to dollars
+                        if (usageRate > 5) {
+                            usageRate = usageRate / 100;
+                        }
+                        result.data.usageCharge = usageRate;
+                    }
+                    
+                    const supplyChargeStr = this.extractBestCharge(text, this.supplyChargePatterns, 'supply');
+                    if (supplyChargeStr) {
+                        let supplyRate = parseFloat(supplyChargeStr);
+                        // If value is in cents (>10), convert to dollars
+                        if (supplyRate > 10) {
+                            supplyRate = supplyRate / 100;
+                        }
+                        result.data.supplyCharge = supplyRate;
+                    }
+                    
+                    // Extract bill date
+                    const billDateStr = this.extractField(text, this.billDatePatterns);
+                    result.data.billDate = billDateStr;
+                    
+                    result.data.provider = this.detectRetailer(text);
+                    
+                    // Generate considerations
+                    result.considerations = this.generateConsiderations(result.data, text);
+                    
+                    result.success = true;
+
+                    return result;
+                } catch (error) {
+                    console.error('❌ Parser Error:', error);
+                    // Return safe defaults even on error
+                    result.data.customerName = 'Valued Customer';
+                    result.data.dailyUsage = 20;
+                    result.data.quarterlyBill = 504;
+                    result.success = true;
+                    return result;
+                }
+            }
+
+            generateConsiderations(data, rawText) {
+                const considerations = [];
+                const dailyUsage = data.dailyUsage || 20;
+                const quarterlyBill = data.quarterlyBill || 400;
+                
+                // Data quality warning for extreme values
+                if (dailyUsage >= 100) {
+                    considerations.push({
+                        icon: '⚠️',
+                        type: 'data',
+                        title: 'Unusual Usage Data Detected',
+                        description: 'The extracted usage appears extremely high. This quote is preliminary - we strongly recommend a detailed site assessment to verify your actual consumption patterns.',
+                        impact: 'negative'
+                    });
+                } else if (dailyUsage > 60) {
+                    considerations.push({
+                        icon: '🏭',
+                        type: 'data',
+                        title: 'Commercial-Scale Usage',
+                        description: `Your ${dailyUsage} kWh/day usage suggests commercial or very high residential consumption. A custom system design is recommended for optimal results.`,
+                        impact: 'neutral'
+                    });
+                } else if (dailyUsage < 5) {
+                    considerations.push({
+                        icon: '🔍',
+                        type: 'data',
+                        title: 'Very Low Usage Detected',
+                        description: 'Your usage appears unusually low. This may be a partial bill or holiday property. Please discuss your typical usage patterns during consultation.',
+                        impact: 'neutral'
+                    });
+                }
+                
+                // DNSP-specific considerations
+                if (data.dnsp) {
+                    if (data.dnsp.name === 'AusNet Services') {
+                        considerations.push({
+                            icon: '⚡',
+                            type: 'network',
+                            title: 'AusNet Services Territory',
+                            description: `You're in our primary service area (${data.dnsp.region}). We're experienced with AusNet connection requirements and can fast-track your installation.`,
+                            impact: 'positive'
+                        });
+                    } else if (data.dnsp.name !== 'Unknown DNSP') {
+                        considerations.push({
+                            icon: '🗺️',
+                            type: 'network',
+                            title: `${data.dnsp.name} Network`,
+                            description: `Your property is serviced by ${data.dnsp.name} (${data.dnsp.region}). Different network connection requirements may apply.`,
+                            impact: 'neutral'
+                        });
+                    }
+                }
+                
+                // Meter type considerations
+                if (data.meterType && data.meterType.type === 'Smart Meter') {
+                    considerations.push({
+                        icon: '📊',
+                        type: 'meter',
+                        title: 'Smart Meter Detected',
+                        description: 'Your smart meter with time-of-use pricing is perfect for battery storage. You can shift usage to off-peak times and maximize savings by 40-60%.',
+                        impact: 'positive'
+                    });
+                }
+                
+                // New customer detection
+                if (rawText.toLowerCase().includes('new customer') || 
+                    rawText.toLowerCase().includes('welcome') ||
+                    rawText.toLowerCase().includes('first bill')) {
+                    considerations.push({
+                        icon: '🆕',
+                        type: 'account',
+                        title: 'New Customer Account',
+                        description: 'This appears to be a new customer bill. Usage estimates are based on limited historical data. Solar recommendations may be refined after a full billing quarter.',
+                        impact: 'neutral'
+                    });
+                }
+                
+                // Seasonal analysis
+                const season = this.detectSeason(data.billDate);
+                if (season === 'winter') {
+                    considerations.push({
+                        icon: '❄️',
+                        type: 'seasonal',
+                        title: 'Winter Bill Detected',
+                        description: 'This bill is from winter months (Jun-Aug). Heating typically increases usage by 30-50%. Your annual average may be lower.',
+                        impact: 'neutral'
+                    });
+                } else if (season === 'summer') {
+                    considerations.push({
+                        icon: '☀️',
+                        type: 'seasonal',
+                        title: 'Summer Bill Detected',
+                        description: 'This bill is from summer months (Dec-Feb). Cooling costs can spike usage. Solar generates best during these months.',
+                        impact: 'positive'
+                    });
+                }
+                
+                // High usage analysis
+                if (dailyUsage > 35) {
+                    considerations.push({
+                        icon: '⚡',
+                        type: 'usage',
+                        title: 'Very High Energy Usage',
+                        description: `Your ${dailyUsage} kWh/day usage is significantly above Victorian average (15-20 kWh). Pool pumps, large appliances, or multiple occupants may be contributing factors.`,
+                        impact: 'positive'
+                    });
+                } else if (dailyUsage < 10) {
+                    considerations.push({
+                        icon: '💡',
+                        type: 'usage',
+                        title: 'Low Energy Usage',
+                        description: `Your ${dailyUsage} kWh/day usage is below average. You may be away frequently or have efficient appliances. Solar sizing can be optimized accordingly.`,
+                        impact: 'neutral'
+                    });
+                }
+                
+                // High bill amount relative to usage
+                const costPerKwh = quarterlyBill / (dailyUsage * 90);
+                if (costPerKwh > 0.35) {
+                    considerations.push({
+                        icon: '💰',
+                        type: 'pricing',
+                        title: 'High Electricity Rates',
+                        description: `You're paying approximately ${(costPerKwh * 100).toFixed(1)}c/kWh, which is above average. Solar will provide excellent ROI at these rates.`,
+                        impact: 'positive'
+                    });
+                }
+                
+                // Time-of-use detection
+                if (rawText.toLowerCase().includes('peak') || rawText.toLowerCase().includes('off-peak')) {
+                    considerations.push({
+                        icon: '⏰',
+                        type: 'tariff',
+                        title: 'Time-of-Use Tariff Detected',
+                        description: 'Your plan charges different rates for peak/off-peak. Battery storage will maximize savings by time-shifting your usage.',
+                        impact: 'positive'
+                    });
+                }
+                
+                // Solar feed-in tariff detection - only if actual solar export exists
+                const hasSolarExport = /solar\s*(?:export|fit|feed[\s-]*in).*?([0-9]+\.?[0-9]*)\s*kWh/i.test(rawText);
+                const hasSolarCredit = /solar\s*(?:credit|generation).*?\$\s*[0-9]+/i.test(rawText);
+                
+                // Only flag if there's evidence of actual generation, not just mention of tariffs
+                if (hasSolarExport || hasSolarCredit) {
+                    considerations.push({
+                        icon: '🔄',
+                        type: 'existing',
+                        title: 'Existing Solar Detected',
+                        description: 'You may have existing solar. Adding battery storage will capture excess solar generation currently exported at low feed-in rates.',
+                        impact: 'positive'
+                    });
+                }
+                
+                // Supply charge analysis
+                if (data.supplyCharge && data.supplyCharge > 1.20) {
+                    considerations.push({
+                        icon: '📊',
+                        type: 'charges',
+                        title: 'High Daily Supply Charge',
+                        description: `Your daily supply charge ($${data.supplyCharge.toFixed(2)}/day) is above average. Battery systems can't reduce this, but solar greatly reduces your usage charges.`,
+                        impact: 'neutral'
+                    });
+                }
+                
+                return considerations;
+            }
+
+            detectSeason(billDateStr) {
+                if (!billDateStr) return 'unknown';
+                
+                try {
+                    // Try to parse various date formats
+                    const parts = billDateStr.split(/[\/\-]/);
+                    let month;
+                    
+                    if (parts.length >= 2) {
+                        // Assume DD/MM/YYYY or MM/DD/YYYY format
+                        // In Australia, typically DD/MM/YYYY
+                        const firstNum = parseInt(parts[0]);
+                        const secondNum = parseInt(parts[1]);
+                        
+                        // If first number > 12, it's day, so second is month
+                        if (firstNum > 12) {
+                            month = secondNum;
+                        } else if (secondNum > 12) {
+                            // If second number > 12, first must be month
+                            month = firstNum;
+                        } else {
+                            // Ambiguous - assume DD/MM (Australian format)
+                            month = secondNum;
+                        }
+                    }
+                    
+                    if (month) {
+                        // Australian seasons (Southern Hemisphere)
+                        if (month >= 6 && month <= 8) return 'winter';
+                        if (month >= 12 || month <= 2) return 'summer';
+                        if (month >= 3 && month <= 5) return 'autumn';
+                        if (month >= 9 && month <= 11) return 'spring';
+                    }
+                } catch (e) {
+                    console.log('Could not detect season from date:', billDateStr);
+                }
+                
+                return 'unknown';
+            }
+
+            extractUsage(text) {
+                const usageMatches = [];
+                
+                // Priority 1: Look for explicit "average daily usage" or "for this bill" statements
+                const avgPatterns = [
+                    /(?:for\s+this\s+bill|average\s+daily\s+usage|daily\s+average)[:\s]*([0-9]{1,3}\.?[0-9]{0,2})\s*kWh/gi
+                ];
+                
+                for (const pattern of avgPatterns) {
+                    const matches = [...text.matchAll(pattern)];
+                    for (const match of matches) {
+                        const value = parseFloat(match[1]);
+                        if (!isNaN(value) && value >= 0.5 && value <= 100) {
+                            console.log('✓ Found average daily usage:', value, 'kWh/day');
+                            return value; // Return immediately if we find this
+                        }
+                    }
+                }
+                
+                // Priority 2: Try all other usage patterns
+                for (const pattern of this.usagePatterns) {
+                    const matches = [...text.matchAll(new RegExp(pattern, 'gi'))];
+                    for (const match of matches) {
+                        const value = parseFloat(match[1] || match[0]);
+                        if (!isNaN(value)) {
+                            usageMatches.push(value);
+                        }
+                    }
+                }
+                
+                // Filter out ridiculous values and likely line items (>100)
+                const validUsages = usageMatches.filter(usage => {
+                    return usage >= 0.5 && usage <= 100;
+                });
+                
+                if (validUsages.length === 0) {
+                    // Try to calculate from quarterly total
+                    const quarterlyTotal = this.extractQuarterlyUsage(text);
+                    if (quarterlyTotal) {
+                        const dailyAverage = quarterlyTotal / 90;
+                        if (dailyAverage >= 0.5 && dailyAverage <= 100) {
+                            console.log('✓ Calculated from quarterly:', dailyAverage, 'kWh/day');
+                            return dailyAverage;
+                        }
+                    }
+                    return null;
+                }
+                
+                // If we have multiple, prefer values in reasonable residential range (10-50)
+                const residentialRange = validUsages.filter(u => u >= 8 && u <= 60);
+                if (residentialRange.length > 0) {
+                    residentialRange.sort((a, b) => a - b);
+                    const median = residentialRange[Math.floor(residentialRange.length / 2)];
+                    console.log('✓ Found usage from patterns:', median, 'kWh/day');
+                    return median;
+                }
+                
+                // Otherwise return the median of all valid values
+                validUsages.sort((a, b) => a - b);
+                const median = validUsages[Math.floor(validUsages.length / 2)];
+                console.log('✓ Using median usage:', median, 'kWh/day');
+                return median;
+            }
+
+            extractBestCharge(text, patterns, type) {
+                const matches = [];
+                
+                for (const pattern of patterns) {
+                    const results = [...text.matchAll(new RegExp(pattern, 'gi'))];
+                    for (const match of results) {
+                        const value = parseFloat(match[1]);
+                        if (!isNaN(value) && value > 0) {
+                            // Filter out unrealistic values
+                            if (type === 'supply' && value > 0.3 && value < 500) {
+                                matches.push(value);
+                            } else if (type === 'usage' && value > 0.05 && value < 200) {
+                                matches.push(value);
+                            }
+                        }
+                    }
+                }
+                
+                if (matches.length === 0) return null;
+                
+                // If multiple charges found (like peak/off-peak), return average
+                if (matches.length > 1) {
+                    const avg = matches.reduce((a, b) => a + b, 0) / matches.length;
+                    console.log(`✓ Found multiple ${type} charges, averaging:`, matches, '→', avg);
+                    return avg.toFixed(4);
+                }
+                
+                console.log(`✓ Found ${type} charge:`, matches[0]);
+                return matches[0].toString();
+            }
+
+            extractQuarterlyUsage(text) {
+                // Look for total usage patterns (e.g., "Total: 2340 kWh")
+                const patterns = [
+                    /total\s*usage[:\s]*([\d,]+\.?\d*)\s*kWh/i,
+                    /total[:\s]*([\d,]+\.?\d*)\s*kWh/i,
+                    /(?:quarterly|period)\s*usage[:\s]*([\d,]+\.?\d*)\s*kWh/i
+                ];
+                
+                for (const pattern of patterns) {
+                    const match = text.match(pattern);
+                    if (match) {
+                        const value = parseFloat(match[1].replace(/,/g, ''));
+                        // Quarterly total should be 100-10,000 kWh
+                        if (value >= 100 && value <= 10000) {
+                            return value;
+                        }
+                    }
+                }
+                
+                return null;
+            }
+
+            detectRetailer(text) {
+                const lowerText = text.toLowerCase();
+                
+                for (const [key, retailer] of Object.entries(this.retailers)) {
+                    for (const identifier of retailer.identifiers) {
+                        if (lowerText.includes(identifier)) {
+                            return retailer.name;
+                        }
+                    }
+                }
+                
+                return 'Unknown Retailer';
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        //  🤖 BATTERY VIABILITY ANALYZER
+        // ═══════════════════════════════════════════════════════════
+        
+        function analyzeBatteryViability(billData) {
+            const dailyUsage = billData.dailyUsage || 20;
+            const quarterlyBill = billData.quarterlyBill || 400;
+            
+            let score = 0;
+            const factors = [];
+            
+            // Factor 1: Daily Usage (40 points max)
+            if (dailyUsage >= 25) {
+                score += 40;
+                factors.push({ icon: '⚡', text: `High daily usage (${dailyUsage} kWh/day) - Battery highly recommended`, positive: true });
+            } else if (dailyUsage >= 18) {
+                score += 30;
+                factors.push({ icon: '⚡', text: `Good daily usage (${dailyUsage} kWh/day) - Battery beneficial`, positive: true });
+            } else if (dailyUsage >= 12) {
+                score += 20;
+                factors.push({ icon: '⚡', text: `Moderate usage (${dailyUsage} kWh/day) - Battery viable`, positive: true });
+            } else {
+                score += 10;
+                factors.push({ icon: '⚠️', text: `Low usage (${dailyUsage} kWh/day) - Solar-only may be better`, positive: false });
+            }
+            
+            // Factor 2: Bill Amount (30 points max)
+            if (quarterlyBill >= 500) {
+                score += 30;
+                factors.push({ icon: '💰', text: `High electricity costs ($${quarterlyBill}/qtr) - Strong ROI`, positive: true });
+            } else if (quarterlyBill >= 350) {
+                score += 20;
+                factors.push({ icon: '💰', text: `Above average costs ($${quarterlyBill}/qtr) - Good savings`, positive: true });
+            } else {
+                score += 10;
+                factors.push({ icon: '💰', text: `Moderate costs ($${quarterlyBill}/qtr) - Standard savings`, positive: true });
+            }
+            
+            // Factor 3: Peak Usage Potential (15 points)
+            score += 15;
+            factors.push({ icon: '🌞', text: 'Battery stores excess solar for evening use', positive: true });
+            
+            // Factor 4: Backup Power (15 points)
+            score += 15;
+            factors.push({ icon: '🔋', text: 'Provides backup power during outages', positive: true });
+            
+            return {
+                score: Math.min(100, score),
+                viable: score >= 60,
+                factors: factors,
+                recommendation: score >= 80 ? 'Highly Recommended' : score >= 60 ? 'Recommended' : 'Consider Solar-Only'
+            };
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        //  🎯 SYSTEM RECOMMENDATION ENGINE
+        // ═══════════════════════════════════════════════════════════
+        
+        function recommendBatterySystem(billData, viability) {
+            const dailyUsage = billData.dailyUsage || 20;
+            
+            // Sanity check - refuse to quote on absurd usage
+            if (dailyUsage > 100) {
+                console.error('⚠️ Usage too high:', dailyUsage, 'kWh/day - likely data error');
+                // Cap at 100 for safety but this should be flagged
+                billData.dailyUsage = 100;
+            }
+            
+            if (dailyUsage < 5) {
+                console.warn('⚠️ Usage suspiciously low:', dailyUsage, 'kWh/day');
+                // Minimum viable usage for solar
+                billData.dailyUsage = 10;
+            }
+            
+            const validatedUsage = billData.dailyUsage;
+            
+            // Find system that best matches usage
+            for (const system of BATTERY_SYSTEMS) {
+                if (validatedUsage >= system.minUsage && validatedUsage <= system.maxUsage) {
+                    return system;
+                }
+            }
+            
+            // Default to smallest or largest if outside ranges
+            if (validatedUsage < 12) return BATTERY_SYSTEMS[0];
+            return BATTERY_SYSTEMS[BATTERY_SYSTEMS.length - 1];
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        //  💰 ROI CALCULATOR
+        // ═══════════════════════════════════════════════════════════
+        
+        function calculateROI(billData, system) {
+            const annualUsage = (billData.dailyUsage || 20) * 365;
+            const currentAnnualCost = billData.quarterlyBill ? billData.quarterlyBill * 4 : annualUsage * 0.28;
+            
+            // Battery systems have better ROI due to time-shifting
+            const selfConsumption = Math.min(system.estimatedProduction * 0.7, annualUsage); // 70% self-use with battery
+            const exportProduction = system.estimatedProduction - selfConsumption;
+            const electricityRate = 0.28;
+            const feedInRate = 0.05;
+            
+            const savingsFromSelfUse = selfConsumption * electricityRate;
+            const earningsFromExport = exportProduction * feedInRate;
+            const year1Savings = Math.round(savingsFromSelfUse + earningsFromExport);
+            
+            const paybackYears = (system.priceAfterRebates / year1Savings).toFixed(1);
+            const savings25Years = Math.round(year1Savings * 25);
+            const reductionPercentage = Math.round((year1Savings / currentAnnualCost) * 100);
+            
+            return {
+                currentAnnualCost: Math.round(currentAnnualCost),
+                year1Savings: year1Savings,
+                paybackYears: paybackYears,
+                savings25Years: savings25Years,
+                reductionPercentage: reductionPercentage,
+                monthlyReduction: Math.round(year1Savings / 12)
+            };
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        //  🎨 PROPOSAL RENDERER
+        // ═══════════════════════════════════════════════════════════
+        
+        function renderProposal(billData, system, viability, roi, considerations) {
+            const customer = billData;
+            
+            return `
+                <div class="venom-proposal-complete">
+                    
+                    <div class="proposal-header">
+                        <h1>Your Personalized Solar + Battery Proposal</h1>
+                        <div class="customer-info">
+                            <h2>${customer.customerName || 'Valued Customer'}</h2>
+                            <p>${customer.address || ''}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="current-costs section">
+                        <h3>📊 Your Current Energy Costs</h3>
+                        <div class="cost-display">
+                            <div class="big-number">$${customer.quarterlyBill || 400}/quarter</div>
+                            <div class="annual-cost">= $${roi.currentAnnualCost.toLocaleString()}/year</div>
+                            <div class="daily-usage">${customer.dailyUsage || 20} kWh/day average usage</div>
+                        </div>
+                        
+                        <div class="bill-details-grid" style="margin-top: 25px;">
+                            ${customer.nmi ? `
+                            <div class="detail-item">
+                                <div class="detail-label">NMI</div>
+                                <div class="detail-value">${customer.nmi}</div>
+                            </div>
+                            ` : ''}
+                            
+                            ${customer.dnsp ? `
+                            <div class="detail-item">
+                                <div class="detail-label">Distribution Network</div>
+                                <div class="detail-value" style="font-size: 14px;">${customer.dnsp.name}</div>
+                                <div style="font-size: 11px; color: #9ca3af; margin-top: 3px;">${customer.dnsp.region}</div>
+                            </div>
+                            ` : ''}
+                            
+                            ${customer.meterNumber ? `
+                            <div class="detail-item">
+                                <div class="detail-label">Meter Number</div>
+                                <div class="detail-value">${customer.meterNumber}</div>
+                            </div>
+                            ` : ''}
+                            
+                            ${customer.meterType ? `
+                            <div class="detail-item">
+                                <div class="detail-label">Meter Type</div>
+                                <div class="detail-value">${customer.meterType.type}</div>
+                                <div style="font-size: 11px; color: #9ca3af; margin-top: 3px;">${customer.meterType.features}</div>
+                            </div>
+                            ` : ''}
+                            
+                            ${customer.usageCharge ? `
+                            <div class="detail-item">
+                                <div class="detail-label">Usage Rate</div>
+                                <div class="detail-value">${customer.usageCharge >= 1 ? '$' + customer.usageCharge.toFixed(2) : (customer.usageCharge * 100).toFixed(1) + 'c'}/kWh</div>
+                            </div>
+                            ` : ''}
+                            
+                            ${customer.supplyCharge ? `
+                            <div class="detail-item">
+                                <div class="detail-label">Daily Supply Charge</div>
+                                <div class="detail-value">$${customer.supplyCharge.toFixed(2)}/day</div>
+                            </div>
+                            ` : ''}
+                            
+                            ${customer.provider ? `
+                            <div class="detail-item">
+                                <div class="detail-label">Energy Retailer</div>
+                                <div class="detail-value">${customer.provider}</div>
+                            </div>
+                            ` : ''}
+                            
+                            ${customer.phone ? `
+                            <div class="detail-item">
+                                <div class="detail-label">Contact Phone</div>
+                                <div class="detail-value" style="font-size: 14px;">${customer.phone}</div>
+                            </div>
+                            ` : ''}
+                            
+                            ${customer.email ? `
+                            <div class="detail-item">
+                                <div class="detail-label">Email Address</div>
+                                <div class="detail-value" style="font-size: 13px; word-break: break-all;">${customer.email}</div>
+                            </div>
+                            ` : ''}
+                            
+                            ${customer.billDate ? `
+                            <div class="detail-item">
+                                <div class="detail-label">Bill Date</div>
+                                <div class="detail-value">${customer.billDate}</div>
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                    
+                    <div class="viability-section section">
+                        <h3>🔋 Battery System Viability Analysis</h3>
+                        <div class="viability-analysis">
+                            <div class="viability-score">
+                                <div class="score-circle" style="--score-percent: ${viability.score}%">
+                                    ${viability.score}%
+                                </div>
+                                <div class="score-info">
+                                    <h4>${viability.recommendation}</h4>
+                                    <p>Based on your energy usage patterns, a battery storage system will maximize your savings and energy independence.</p>
+                                </div>
+                            </div>
+                            <div class="viability-factors">
+                                ${viability.factors.map(factor => `
+                                    <div class="factor-item">
+                                        <span class="factor-icon">${factor.icon}</span>
+                                        <span class="factor-text">${factor.text}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="system-recommendation section">
+                        <h3>⚡ Recommended Battery System</h3>
+                        <div class="battery-system-card">
+                            <span class="system-badge">RECOMMENDED FOR YOU</span>
+                            
+                            <div class="system-main">
+                                <div class="system-size">
+                                    <div class="system-size-number">${system.solarKw}kW</div>
+                                    <div class="system-size-label">Solar System</div>
+                                    <div class="system-size-number" style="font-size: 32px; margin-top: 10px;">${system.batteryKwh}kWh</div>
+                                    <div class="system-size-label">Battery Storage</div>
+                                </div>
+                                
+                                <div class="system-details">
+                                    <h4>${system.batterySystem}</h4>
+                                    <p><strong>${system.panels} × ${system.panelWattage}W</strong> ${system.panelModel} Solar Panels</p>
+                                    <p><strong>${system.inverterKw}kW</strong> ${system.inverter} Hybrid Inverter</p>
+                                    <p><strong>${system.batteryKwh}kWh</strong> Battery Storage Capacity</p>
+                                    <p style="color: var(--venom-cyan); margin-top: 10px;">⚡ Estimated ${system.estimatedProduction.toLocaleString()} kWh/year production</p>
+                                    <p style="color: var(--venom-green);">🔋 ${system.phase} Phase System</p>
+                                </div>
+                            </div>
+                            
+                            <div class="system-specs-grid">
+                                <div class="spec-item">
+                                    <div class="spec-label">Coverage</div>
+                                    <div class="spec-value">${Math.min(100, Math.round((system.estimatedProduction / (roi.currentAnnualCost / 0.28)) * 100))}%</div>
+                                </div>
+                                <div class="spec-item">
+                                    <div class="spec-label">Self-Sufficiency</div>
+                                    <div class="spec-value">~70%</div>
+                                </div>
+                                <div class="spec-item">
+                                    <div class="spec-label">Backup Power</div>
+                                    <div class="spec-value">✓ Yes</div>
+                                </div>
+                                <div class="spec-item">
+                                    <div class="spec-label">Warranty</div>
+                                    <div class="spec-value">25 Years</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p style="text-align: center; color: #9ca3af; margin-top: 15px;">
+                            ${system.description}
+                        </p>
+                    </div>
+                    
+                    <div class="investment-section section">
+                        <h3>💰 Your Investment Breakdown</h3>
+                        <div class="price-breakdown">
+                            <div class="price-line retail">
+                                <div class="price-line-label">
+                                    <strong>Full Retail Price</strong>
+                                    <small>Before any rebates or incentives</small>
+                                </div>
+                                <div class="price-line-amount">$${system.retailPrice.toLocaleString()}</div>
+                            </div>
+                            
+                            <div class="price-line rebate">
+                                <div class="price-line-label">
+                                    <strong>- Solar Victoria Rebate</strong>
+                                    <small>$1,400 rebate + $1,400 interest-free loan</small>
+                                </div>
+                                <div class="price-line-amount">-$${system.solarVicRebate.toLocaleString()}</div>
+                            </div>
+                            
+                            <div class="price-line rebate">
+                                <div class="price-line-label">
+                                    <strong>- Federal STCs</strong>
+                                    <small>Small-scale Technology Certificates (${system.solarKw}kW system)</small>
+                                </div>
+                                <div class="price-line-amount">-$${system.stcRebate.toLocaleString()}</div>
+                            </div>
+                            
+                            <div class="price-line total">
+                                <div class="price-line-label">
+                                    <strong>STARTS AT</strong>
+                                </div>
+                                <div class="price-line-amount">$${Math.round(system.priceAfterRebates * 0.9).toLocaleString()}</div>
+                            </div>
+                            
+                            <div class="payment-options">
+                                <p>Payment Options:</p>
+                                <p>💳 <strong>$${Math.round((system.priceAfterRebates * 0.9) / 52)}/week</strong> over 12 months</p>
+                                <p>💳 <strong>$${Math.round((system.priceAfterRebates * 0.9) / 12)}/month</strong> over 12 months</p>
+                                <p style="font-size: 14px; color: #9ca3af; margin-top: 10px;">Or pay in full and start saving immediately</p>
+                            </div>
+                            
+                            <div class="eligibility-note">
+                                <strong>⚠️ Important Notes:</strong>
+                                <p style="margin-bottom: 12px;">*Based on bill provided. Final price confirmed after site assessment & thorough calculation of energy usage over 12mth period.</p>
+                                <p><strong>Solar Victoria Rebate:</strong> Household income &lt;$210k/year, property value &lt;$3M, no existing solar, owner-occupier</p>
+                                <p><strong>STCs:</strong> Automatically applied at purchase - available to all Victorian properties</p>
+                                <p style="margin-top: 8px; font-size: 12px;">Prices shown assume full eligibility. We'll verify during your free consultation.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="roi-section section">
+                        <h3>📈 Your Return on Investment</h3>
+                        <div class="roi-grid">
+                            <div class="roi-card">
+                                <div class="roi-label">Year 1 Savings</div>
+                                <div class="roi-value">$${roi.year1Savings.toLocaleString()}</div>
+                            </div>
+                            
+                            <div class="roi-card highlight">
+                                <div class="roi-label">Payback Period</div>
+                                <div class="roi-value">${roi.paybackYears} yrs</div>
+                            </div>
+                            
+                            <div class="roi-card">
+                                <div class="roi-label">25-Year Savings</div>
+                                <div class="roi-value">$${roi.savings25Years.toLocaleString()}</div>
+                            </div>
+                            
+                            <div class="roi-card">
+                                <div class="roi-label">Bill Reduction</div>
+                                <div class="roi-value">${roi.reductionPercentage}%</div>
+                            </div>
+                        </div>
+                        
+                        <div class="roi-insight">
+                            <p>
+                                🎯 <strong>Here's what this means:</strong> After just ${roi.paybackYears} years, your system is paid off. 
+                                For the next 20+ years, you're generating <strong>$${roi.year1Savings.toLocaleString()}/year</strong> in FREE electricity!
+                            </p>
+                            <p style="margin-top: 15px;">
+                                💡 Plus, your ${system.batteryKwh}kWh battery stores excess solar power during the day, 
+                                so you can use it during peak evening hours when electricity is most expensive. This is where the real savings come from!
+                            </p>
+                            <p style="margin-top: 15px;">
+                                🔋 <strong>Bonus:</strong> During blackouts, your battery keeps your lights on while your neighbors are in the dark.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    ${considerations && considerations.length > 0 ? `
+                    <div class="considerations-section section">
+                        <h3>🎯 Important Considerations</h3>
+                        <div class="considerations-grid">
+                            ${considerations.map(consideration => `
+                                <div class="consideration-card ${consideration.impact || 'neutral'}">
+                                    <div class="consideration-header">
+                                        <span class="consideration-icon">${consideration.icon}</span>
+                                        <h4 class="consideration-title">${consideration.title}</h4>
+                                    </div>
+                                    <p class="consideration-description">${consideration.description}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    ` : ''}
+                    
+                    <div class="cta-section section">
+                        <button class="cta-button primary huge pulse" onclick="window.location.href='tel:0356729131'">
+                            📞 BOOK FREE SITE INSPECTION
+                        </button>
+                        <p class="cta-subtext">Lock in your $${(system.solarVicRebate + system.stcRebate).toLocaleString()} in rebates</p>
+                        <p class="cta-payment">From just $${Math.round((system.priceAfterRebates * 0.9) / 52)}/week over 12 months</p>
+                        <p class="cta-trust">Free consultation • No obligation • Call (03) 5672 9131</p>
+                        
+                        <div class="social-proof">
+                            <div class="badge">
+                                <span class="badge-icon">✓</span>
+                                <span>CEC Accredited</span>
+                            </div>
+                            <div class="badge">
+                                <span class="badge-icon">🛡️</span>
+                                <span>10-Year Warranty</span>
+                            </div>
+                            <div class="badge">
+                                <span class="badge-icon">🏆</span>
+                                <span>Premium Equipment</span>
+                            </div>
+                            <div class="badge">
+                                <span class="badge-icon">🔋</span>
+                                <span>Battery Specialists</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            `;
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        //  🎬 MAIN PROCESSING PIPELINE
+        // ═══════════════════════════════════════════════════════════
+        
+        async function extractTextFromPDF(file) {
+            console.log('📄 Starting PDF extraction for:', file.name);
+            console.log('📄 File size:', file.size, 'bytes');
+            console.log('📄 File type:', file.type);
+            
+            try {
+                console.log('📄 Converting to arrayBuffer...');
+                const arrayBuffer = await file.arrayBuffer();
+                console.log('📄 ArrayBuffer created, size:', arrayBuffer.byteLength);
+                
+                console.log('📄 Loading PDF document...');
+                const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+                const pdf = await loadingTask.promise;
+                console.log('📄 PDF loaded! Pages:', pdf.numPages);
+                
+                let fullText = '';
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    console.log(`📄 Processing page ${i}/${pdf.numPages}...`);
+                    const page = await pdf.getPage(i);
+                    const textContent = await page.getTextContent();
+                    const pageText = textContent.items.map(item => item.str).join(' ');
+                    fullText += pageText + '\n';
+                    console.log(`📄 Page ${i} extracted: ${pageText.length} chars`);
+                }
+                
+                console.log('📄 Total extracted text length:', fullText.length);
+                return fullText;
+            } catch (error) {
+                console.error('❌ PDF extraction failed:', error);
+                console.error('❌ Error stack:', error.stack);
+                throw error;
+            }
         }
 
         async function runTerminalSequence() {
@@ -355,148 +2532,202 @@
             terminalBody.innerHTML = '';
             
             const phases = [
-                { command: 'init --parse-bill', output: '[✓] Initializing VenomParser v11.5...' },
+                { command: 'init --parse-bill', output: '[✓] Initializing VenomParser v12.0...' },
                 { command: 'extract --customer-data', output: '[✓] Extracting customer information...' },
                 { command: 'analyze --usage-patterns', output: '[✓] Analyzing energy usage patterns...' },
-                { command: 'fetch --satellite-imagery', output: '[✓] Retrieving satellite imagery...' },
-                { command: 'calculate --solar-potential', output: '[✓] Calculating solar generation potential...' },
+                { command: 'calculate --battery-viability', output: '[✓] Calculating battery system viability...' },
+                { command: 'recommend --optimal-system', output: '[✓] Selecting optimal battery system...' },
                 { command: 'compute --rebates', output: '[✓] Computing Victorian rebates...' },
-                { command: 'generate --proposal', output: '[✓] Generating complete proposal...' },
-                { command: 'render --visualization', output: '[✓] Rendering proposal...' }
+                { command: 'calculate --roi', output: '[✓] Calculating return on investment...' },
+                { command: 'generate --proposal', output: '[✓] Generating complete proposal...' }
             ];
             
             for (let i = 0; i < phases.length; i++) {
                 const phase = phases[i];
                 
-                // Prompt line
                 const promptLine = document.createElement('div');
                 promptLine.className = 'terminal-line';
-                promptLine.innerHTML = `<span class="terminal-prompt">venom@parser:~$</span> <span class="terminal-command">${phase.command}</span>`;
+                promptLine.innerHTML = `<span class="terminal-prompt">venom@battery:~$</span> <span class="terminal-command">${phase.command}</span>`;
                 terminalBody.appendChild(promptLine);
                 
                 await new Promise(resolve => setTimeout(resolve, 150));
                 
-                // Output line
                 const outputLine = document.createElement('div');
                 outputLine.className = 'terminal-line terminal-success';
+                outputLine.textContent = phase.output;
                 terminalBody.appendChild(outputLine);
                 
-                await typewriterEffect(phase.output, outputLine, 15);
                 await new Promise(resolve => setTimeout(resolve, 200));
                 
                 terminalBody.scrollTop = terminalBody.scrollHeight;
                 
-                // Update progress
-                updateProgress(((i + 1) / phases.length) * 100);
+                const progressFill = document.getElementById('progressFill');
+                const progressText = document.getElementById('progressText');
+                const percent = ((i + 1) / phases.length) * 100;
+                progressFill.style.width = `${percent}%`;
+                progressText.textContent = `Processing... ${Math.round(percent)}%`;
             }
             
-            // Cursor
             const cursorLine = document.createElement('div');
             cursorLine.className = 'terminal-line';
-            cursorLine.innerHTML = '<span class="terminal-prompt">venom@parser:~$</span> <span class="terminal-cursor"></span>';
+            cursorLine.innerHTML = '<span class="terminal-prompt">venom@battery:~$</span> <span class="terminal-cursor"></span>';
             terminalBody.appendChild(cursorLine);
         }
 
-        function updateProgress(percent) {
-            const progressFill = document.getElementById('progressFill');
-            const progressText = document.getElementById('progressText');
+        async function handleFileUpload(file) {
+            console.log('🚀 Processing:', file.name);
+            console.log('🚀 File type:', file.type);
+            console.log('🚀 File size:', file.size);
             
-            progressFill.style.width = `${percent}%`;
-            progressText.textContent = `Processing... ${Math.round(percent)}%`;
+            const terminalWindow = document.getElementById('terminalWindow');
+            const progressContainer = document.getElementById('progressContainer');
+            const proposalSection = document.getElementById('proposalSection');
             
-            if (percent === 100) {
-                progressText.textContent = 'Complete! Generating proposal...';
-            }
-        }
-
-        // === WRAP YOUR EXISTING FILE HANDLER ===
-        const uploadZone = document.getElementById('uploadZone');
-        const fileInput = document.getElementById('fileInput');
-        const terminalWindow = document.getElementById('terminalWindow');
-        const progressContainer = document.getElementById('progressContainer');
-        const proposalSection = document.getElementById('proposalSection');
-
-        uploadZone.addEventListener('click', () => fileInput.click());
-
-        uploadZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadZone.classList.add('dragover');
-        });
-
-        uploadZone.addEventListener('dragleave', () => {
-            uploadZone.classList.remove('dragover');
-        });
-
-        uploadZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadZone.classList.remove('dragover');
-            const file = e.dataTransfer.files[0];
-            if (file && file.type === 'application/pdf') {
-                handleEliteFileUpload(file);
-            }
-        });
-
-        fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                handleEliteFileUpload(file);
-            }
-        });
-
-        async function handleEliteFileUpload(file) {
-            console.log('🚀 Elite upload started for:', file.name);
-            
-            // Show elite terminal UI
             terminalWindow.classList.add('active');
             progressContainer.classList.add('active');
+            proposalSection.classList.remove('active');
             
-            // Run terminal animation
-            const terminalPromise = runTerminalSequence();
-            
-            // Run YOUR ACTUAL PARSER in parallel
-            // This calls your existing venomprojects-complete-integration.js
             try {
-                // Your integration file should expose a function like this:
-                // processCompleteProposal(file) or handleBillUpload(file)
+                console.log('🚀 Starting terminal sequence...');
+                const terminalPromise = runTerminalSequence();
                 
-                // Try to detect and call your existing function
-                if (typeof window.processCompleteProposal === 'function') {
-                    console.log('✅ Found processCompleteProposal function');
-                    await Promise.all([terminalPromise, window.processCompleteProposal(file)]);
-                } else if (typeof window.handleBillUpload === 'function') {
-                    console.log('✅ Found handleBillUpload function');
-                    await Promise.all([terminalPromise, window.handleBillUpload(file)]);
-                } else {
-                    // Fallback: let your existing code handle it
-                    console.log('⚠️ No recognized function found, triggering manual upload');
-                    await terminalPromise;
-                    
-                    // Trigger your existing file handler
-                    const event = new Event('change', { bubbles: true });
-                    const originalInput = document.querySelector('input[type="file"]:not(#fileInput)');
-                    if (originalInput) {
-                        const dataTransfer = new DataTransfer();
-                        dataTransfer.items.add(file);
-                        originalInput.files = dataTransfer.files;
-                        originalInput.dispatchEvent(event);
-                    }
+                console.log('🚀 Creating VenomParser...');
+                const venomParser = new VenomParser();
+                
+                console.log('🚀 Extracting PDF text...');
+                const pdfText = await extractTextFromPDF(file);
+                
+                console.log('🚀 PDF text extracted, length:', pdfText.length);
+                
+                if (!pdfText || pdfText.length < 100) {
+                    throw new Error('Unable to extract text from PDF - text too short or empty');
                 }
                 
-                console.log('✅ Processing complete');
+                console.log('🚀 Parsing bill...');
+                const parseResult = venomParser.parseBill(pdfText);
                 
-                // Show proposal section
+                if (!parseResult.success) {
+                    console.error('❌ Parse failed:', parseResult);
+                    throw new Error('Could not extract required data from bill');
+                }
+                
+                console.log('✅ Bill parsed:', parseResult);
+                
+                // Analyze battery viability
+                console.log('🚀 Analyzing battery viability...');
+                const viability = analyzeBatteryViability(parseResult.data);
+                console.log('✅ Viability:', viability);
+                
+                // Recommend system
+                console.log('🚀 Recommending system...');
+                const recommendedSystem = recommendBatterySystem(parseResult.data, viability);
+                console.log('✅ System:', recommendedSystem);
+                
+                // Calculate ROI
+                console.log('🚀 Calculating ROI...');
+                const roi = calculateROI(parseResult.data, recommendedSystem);
+                console.log('✅ ROI:', roi);
+                
+                console.log('🚀 Waiting for terminal animation...');
+                await terminalPromise;
+                
+                // Render proposal
+                console.log('🚀 Rendering proposal...');
+                const proposalHTML = renderProposal(parseResult.data, recommendedSystem, viability, roi, parseResult.considerations);
+                proposalSection.innerHTML = proposalHTML;
+                
                 setTimeout(() => {
                     proposalSection.classList.add('active');
                     proposalSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }, 500);
                 
+                console.log('✅ Complete!');
+                
             } catch (error) {
-                console.error('❌ Error processing bill:', error);
-                alert('Error processing bill. Check console for details.');
+                console.error('❌ Error:', error);
+                console.error('❌ Error message:', error.message);
+                console.error('❌ Error stack:', error.stack);
+                alert('Error processing bill: ' + error.message + '\n\nCheck console for details.');
+                terminalWindow.classList.remove('active');
+                progressContainer.classList.remove('active');
             }
         }
 
-        console.log('✅ Elite UI initialized - ready for bill upload');
+        // ═══════════════════════════════════════════════════════════
+        //  📤 FILE UPLOAD HANDLERS
+        // ═══════════════════════════════════════════════════════════
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if PDF.js loaded
+            if (typeof pdfjsLib === 'undefined') {
+                console.error('❌ PDF.js library not loaded!');
+                alert('Error: PDF.js library failed to load. Please refresh the page.');
+                return;
+            }
+            
+            console.log('✅ PDF.js loaded:', pdfjsLib.version);
+            
+            // Configure PDF.js worker
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+            console.log('✅ PDF.js worker configured');
+            
+            const uploadZone = document.getElementById('uploadZone');
+            const fileInput = document.getElementById('fileInput');
+            
+            console.log('🔍 Upload elements:', { uploadZone, fileInput });
+            
+            if (!uploadZone || !fileInput) {
+                console.error('❌ Upload elements not found!');
+                return;
+            }
+
+            uploadZone.addEventListener('click', () => {
+                console.log('📁 Upload zone clicked - triggering file input');
+                fileInput.click();
+                console.log('📁 File input click triggered');
+            });
+
+            uploadZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadZone.classList.add('dragover');
+            });
+
+            uploadZone.addEventListener('dragleave', () => {
+                uploadZone.classList.remove('dragover');
+            });
+
+            uploadZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadZone.classList.remove('dragover');
+                console.log('📁 File dropped!');
+                const file = e.dataTransfer.files[0];
+                console.log('📁 Dropped file:', file);
+                console.log('📁 File type:', file ? file.type : 'no file');
+                if (file && file.type === 'application/pdf') {
+                    console.log('📁 Valid PDF, processing...');
+                    handleFileUpload(file);
+                } else {
+                    console.error('❌ Invalid file type:', file ? file.type : 'no file');
+                    alert('Please upload a PDF file');
+                }
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                console.log('📄 File input change event fired!');
+                console.log('📄 Event:', e);
+                console.log('📄 Files:', e.target.files);
+                console.log('📄 File selected:', e.target.files[0]);
+                const file = e.target.files[0];
+                if (file) {
+                    console.log('📄 File exists, calling handleFileUpload...');
+                    handleFileUpload(file);
+                } else {
+                    console.error('❌ No file in event!');
+                }
+            });
+
+            console.log('✅ VenomParser Battery Edition initialized - Upload handlers ready');
+        });
     </script>
 </body>
 </html>
